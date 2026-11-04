@@ -33,7 +33,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
 
         sessionStorage.setItem("token", data.token);
 
-        console.log("Login exitoso");
+       window.location.href = "../Principal/index.html";
 
     } catch (error) {
         console.error(error);
