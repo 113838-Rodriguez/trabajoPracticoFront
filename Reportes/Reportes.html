@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/reportes.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <div class="app-container">
@@ -51,11 +52,20 @@
             <header class="topbar">
                 <div>
                     <h5 class="mb-0">Panel de reportes</h5>
-                    <small class="text-muted">Consultas asignadas a Pablo</small>
+                    <small class="text-muted">Consulte aquí su información de reportes</small>
                 </div>
                 <div class="user-info">
+
                     <i class="bi bi-person-circle"></i>
-                    <span id="usuarioActual">Pablo</span>
+
+                    <span id="usuarioActual"></span>
+
+                    <button id="btnLogout"
+                            class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-box-arrow-right"></i>
+                        Cerrar sesión
+                    </button>
+
                 </div>
             </header>
 
@@ -65,7 +75,7 @@
                         <h3>Reportes de gestión</h3>
                         <p class="text-muted mb-0">Consultá información de ventas, productos y entregas.</p>
                     </div>
-                    <span class="report-count"><i class="bi bi-file-earmark-bar-graph"></i> 3 reportes</span>
+                    <span class="report-count"><i class="bi bi-file-earmark-bar-graph"></i> 6 reportes</span>
                 </div>
 
                 <!-- SELECTOR DE REPORTES -->
@@ -73,8 +83,15 @@
                     <button class="report-option active" type="button" data-report="productos">
                         <span class="option-icon"><i class="bi bi-cart-x"></i></span>
                         <span>
-                            <strong>Productos sin ventas</strong>
-                            <small>Capital inmovilizado</small>
+                            <strong>Productos sin Ventas</strong>
+                        </span>
+                        <i class="bi bi-chevron-right option-arrow"></i>
+                    </button>
+
+                    <button class="report-option" type="button" data-report="stockSucursal">
+                        <span class="option-icon"><i class="bi bi-shop"></i></span>
+                        <span>
+                            <strong>Stock por Sucursal</strong>
                         </span>
                         <i class="bi bi-chevron-right option-arrow"></i>
                     </button>
@@ -82,8 +99,16 @@
                     <button class="report-option" type="button" data-report="ventas">
                         <span class="option-icon"><i class="bi bi-graph-up-arrow"></i></span>
                         <span>
-                            <strong>Ventas de empleado</strong>
-                            <small>Por mes y sucursal</small>
+                            <strong>Ventas por Empleado</strong>
+                            <small>Por sucursal y empleado</small>
+                        </span>
+                        <i class="bi bi-chevron-right option-arrow"></i>
+                    </button>
+
+                    <button class="report-option" type="button" data-report="facturacionCliente">
+                        <span class="option-icon"><i class="bi bi-receipt-cutoff"></i></span>
+                        <span>
+                            <strong>Facturación por Cliente</strong>
                         </span>
                         <i class="bi bi-chevron-right option-arrow"></i>
                     </button>
@@ -91,20 +116,29 @@
                     <button class="report-option" type="button" data-report="entregas">
                         <span class="option-icon"><i class="bi bi-truck"></i></span>
                         <span>
-                            <strong>Entregas atrasadas</strong>
-                            <small>Pedidos y Reposiciones</small>
+                            <strong>Entregas Atrasadas</strong>
+                            <small>Pedidos y reposiciones</small>
                         </span>
                         <i class="bi bi-chevron-right option-arrow"></i>
                     </button>
+
+                    <button class="report-option" type="button" data-report="stockMinimo">
+                        <span class="option-icon"><i class="bi bi-exclamation-triangle"></i></span>
+                        <span>
+                            <strong>Productos para Reposición</strong>
+                        </span>
+                        <i class="bi bi-chevron-right option-arrow"></i>
+                    </button>
+
                 </section>
 
                 <!-- REPORTE 1 -->
                 <section class="report-panel active" id="panel-productos">
                     <div class="panel-heading">
                         <div>
-                            <span class="eyebrow">REPORTE 01</span>
+                            <span class="eyebrow">PRODUCTOS SIN VENTAS</span>
                             <h4>Productos sin ventas</h4>
-                            <p>Identificá productos que no registraron ventas durante un período determinado.</p>
+                            <p>Identificá productos que no registraron ventas.</p>
                         </div>
                         <div class="panel-heading-icon"><i class="bi bi-cart-x"></i></div>
                     </div>
@@ -112,8 +146,8 @@
                     <form id="formProductos" class="filter-card">
                         <div class="filter-field">
                             <label for="diasSinVentas">Últimos días sin ventas</label>
-                            <input type="number" class="form-control" id="diasSinVentas" min="1" value="30" required>
                             <small>Ingresá una cantidad de días mayor a cero.</small>
+                            <input type="number" class="form-control" id="diasSinVentas" min="1" value="30" required>
                         </div>
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-search"></i> Consultar
@@ -160,13 +194,49 @@
                     </div>
                 </section>
 
+                <!-- REPORTE 2 - MAXI -->
+                <section class="report-panel" id="panel-stockSucursal">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="eyebrow">STOCK POR SUCURSAL</span>
+                            <h4>Stock de un producto por sucursal</h4>
+                            <p>Consultá las cantidades disponibles y el stock mínimo de un producto en cada sucursal.</p>
+                        </div>
+                        <div class="panel-heading-icon"><i class="bi bi-shop"></i></div>
+                    </div>
+                    <form id="formStockSucursal" class="filter-card">
+                        <div class="filter-field">
+                            <label for="codigoProductoStock">Código del producto</label>
+                            <small>Se buscará el producto en todas las sucursales.</small>
+                            <input type="text" class="form-control" id="codigoProductoStock" maxlength="30" required placeholder="Ingresá el código">
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Consultar</button>
+                    </form>
+                    <div class="summary-grid">
+                        <div class="summary-card"><span>Sucursales encontradas</span><strong id="totalStockSucursales">—</strong></div>
+                        <div class="summary-card"><span>Unidades disponibles</span><strong id="unidadesStockSucursales">—</strong></div>
+                    </div>
+                    <div class="chart-card mb-4">
+                        <div class="chart-heading"><div><h5>Disponibilidad por sucursal</h5><small>Comparación de unidades actuales y stock mínimo.</small></div></div>
+                        <div class="chart-container"><canvas id="chartStockSucursal" role="img" aria-label="Gráfico de stock actual y mínimo por sucursal"></canvas><p id="emptyChartStockSucursal" class="chart-empty">Realizá una consulta para visualizar el gráfico.</p></div>
+                    </div>
+                    <div class="table-card">
+                        <div class="table-heading"><div><h5>Existencias por sucursal</h5><small id="infoStockSucursal">Ingresá un código para consultar.</small></div>
+                            <button class="btn btn-outline-primary btn-sm" type="button" id="exportarStockSucursal" disabled><i class="bi bi-download"></i> Exportar CSV</button>
+                        </div>
+                        <div class="table-responsive"><table class="table table-hover align-middle"><thead><tr>
+                            <th>Código</th><th>Producto</th><th>Sucursal</th><th class="text-end">Cantidad actual</th><th class="text-end">Stock mínimo</th>
+                        </tr></thead><tbody id="tablaStockSucursal"><tr><td colspan="5" class="empty-state">Todavía no hay datos para mostrar.</td></tr></tbody></table></div>
+                    </div>
+                </section>
+
                 <!-- REPORTE 3 -->
                 <section class="report-panel" id="panel-ventas">
                     <div class="panel-heading">
                         <div>
-                            <span class="eyebrow">REPORTE 03</span>
+                            <span class="eyebrow">VENTAS POR EMPLEADO</span>
                             <h4>Ventas mensuales por empleado y sucursal</h4>
-                            <p>Analizá la cantidad de facturas y el total vendido según los filtros seleccionados.</p>
+                            <p>Analizá la cantidad de facturas y el total vendido.</p>
                         </div>
                         <div class="panel-heading-icon"><i class="bi bi-graph-up-arrow"></i></div>
                     </div>
@@ -204,6 +274,10 @@
                         </div>
                     </div>
 
+                    <div class="chart-card mb-4">
+                        <div class="chart-heading"><div><h5>Ventas por empleado y período</h5><small>Total vendido en pesos argentinos según los filtros seleccionados.</small></div></div>
+                        <div class="chart-container chart-container-tall"><canvas id="chartVentas" role="img" aria-label="Gráfico de ventas por empleado y período"></canvas><p id="emptyChartVentas" class="chart-empty">Realizá una consulta para visualizar el gráfico.</p></div>
+                    </div>
                     <div class="table-card">
                         <div class="table-heading">
                             <div>
@@ -233,11 +307,44 @@
                     </div>
                 </section>
 
+                <!-- REPORTE 4 - MAXI -->
+                <section class="report-panel" id="panel-facturacionCliente">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="eyebrow">FACTURACIÓN POR CLIENTE</span>
+                            <h4>Facturación por tipo de cliente</h4>
+                            <p>Compará la cantidad de facturas, el total facturado y el promedio por factura.</p>
+                        </div>
+                        <div class="panel-heading-icon"><i class="bi bi-receipt-cutoff"></i></div>
+                    </div>
+                    <form id="formFacturacionCliente" class="filter-card filter-grid">
+                        <div class="filter-field"><label for="fechaDesdeFacturacion">Fecha desde</label><input type="date" class="form-control" id="fechaDesdeFacturacion" required></div>
+                        <div class="filter-field"><label for="fechaHastaFacturacion">Fecha hasta</label><input type="date" class="form-control" id="fechaHastaFacturacion" required></div>
+                        <button type="submit" class="btn btn-primary align-self-end"><i class="bi bi-search"></i> Consultar</button>
+                    </form>
+                    <div class="summary-grid">
+                        <div class="summary-card"><span>Facturas registradas</span><strong id="totalFacturasCliente">—</strong></div>
+                        <div class="summary-card"><span>Total facturado</span><strong id="totalFacturadoCliente">—</strong></div>
+                    </div>
+                    <div class="chart-card mb-4">
+                        <div class="chart-heading"><div><h5>Distribución de facturación</h5><small>Participación del total facturado por tipo de cliente.</small></div></div>
+                        <div class="chart-container chart-container-doughnut"><canvas id="chartFacturacionCliente" role="img" aria-label="Gráfico de dona de facturación por tipo de cliente"></canvas><p id="emptyChartFacturacionCliente" class="chart-empty">Seleccioná un período y realizá una consulta.</p></div>
+                    </div>
+                    <div class="table-card">
+                        <div class="table-heading"><div><h5>Facturación por segmento</h5><small id="infoFacturacionCliente">Seleccioná un período para consultar.</small></div>
+                            <button class="btn btn-outline-primary btn-sm" type="button" id="exportarFacturacionCliente" disabled><i class="bi bi-download"></i> Exportar CSV</button>
+                        </div>
+                        <div class="table-responsive"><table class="table table-hover align-middle"><thead><tr>
+                            <th>Tipo de cliente</th><th class="text-end">Cantidad de facturas</th><th class="text-end">Total facturado</th><th class="text-end">Promedio por factura</th>
+                        </tr></thead><tbody id="tablaFacturacionCliente"><tr><td colspan="4" class="empty-state">Todavía no hay datos para mostrar.</td></tr></tbody></table></div>
+                    </div>
+                </section>
+
                 <!-- REPORTE 5 -->
                 <section class="report-panel" id="panel-entregas">
                     <div class="panel-heading">
                         <div>
-                            <span class="eyebrow">REPORTE 05</span>
+                            <span class="eyebrow">ENTREGAS ATRASADAS</span>
                             <h4>Entregas atrasadas</h4>
                             <p>Consultá pedidos y reposiciones cuya entrega presenta demoras.</p>
                         </div>
@@ -247,8 +354,8 @@
                     <form id="formEntregas" class="filter-card">
                         <div class="filter-field">
                             <label for="fechaReferencia">Fecha de referencia</label>
-                            <input type="date" class="form-control" id="fechaReferencia" required>
                             <small>Se utiliza para calcular los días de atraso.</small>
+                            <input type="date" class="form-control" id="fechaReferencia" required>
                         </div>
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-search"></i> Consultar
@@ -294,6 +401,42 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </section>
+
+                <!-- REPORTE 6 - MAXI -->
+                <section class="report-panel" id="panel-stockMinimo">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="eyebrow">PRODUCTOS PARA REPOSICIÓN</span>
+                            <h4>Productos bajo stock mínimo</h4>
+                            <p>Detectá productos que necesitan reposición, con la posibilidad de filtrar por sucursal.</p>
+                        </div>
+                        <div class="panel-heading-icon"><i class="bi bi-exclamation-triangle"></i></div>
+                    </div>
+                    <form id="formStockMinimo" class="filter-card">
+                        <div class="filter-field">
+                            <label for="sucursalStockMinimo">Sucursal</label>
+                            <small>Dejá la opción general para consultar todas.</small>
+                            <select class="form-select" id="sucursalStockMinimo"><option value="">Todas las sucursales</option></select>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Consultar</button>
+                    </form>
+                    <div class="summary-grid">
+                        <div class="summary-card"><span>Productos para reponer</span><strong id="totalStockMinimo">—</strong></div>
+                        <div class="summary-card"><span>Unidades faltantes</span><strong id="totalFaltanteReposicion">—</strong></div>
+                    </div>
+                    <div class="chart-card mb-4">
+                        <div class="chart-heading"><div><h5>Prioridad de reposición</h5><small>Los 10 productos con mayor faltante de unidades.</small></div></div>
+                        <div class="chart-container chart-container-tall"><canvas id="chartStockMinimo" role="img" aria-label="Gráfico de productos con mayor faltante de stock"></canvas><p id="emptyChartStockMinimo" class="chart-empty">Seleccioná una sucursal o consultá todas.</p></div>
+                    </div>
+                    <div class="table-card">
+                        <div class="table-heading"><div><h5>Detalle de reposición</h5><small id="infoStockMinimo">Seleccioná una sucursal o consultá todas.</small></div>
+                            <button class="btn btn-outline-primary btn-sm" type="button" id="exportarStockMinimo" disabled><i class="bi bi-download"></i> Exportar CSV</button>
+                        </div>
+                        <div class="table-responsive"><table class="table table-hover align-middle"><thead><tr>
+                            <th>Sucursal</th><th>Código</th><th>Producto</th><th class="text-end">Cantidad actual</th><th class="text-end">Stock mínimo</th><th class="text-end">Faltante para reposición</th>
+                        </tr></thead><tbody id="tablaStockMinimo"><tr><td colspan="6" class="empty-state">Todavía no hay datos para mostrar.</td></tr></tbody></table></div>
                     </div>
                 </section>
 

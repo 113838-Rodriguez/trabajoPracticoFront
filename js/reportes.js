@@ -11,9 +11,16 @@ const currencyFormatter = new Intl.NumberFormat("es-AR", {
 
 const numberFormatter = new Intl.NumberFormat("es-AR");
 
-let productosData = []; 
+let productosData = [];
 let ventasData = [];
 let entregasData = [];
+let stockSucursalData = [];
+let facturacionClienteData = [];
+let stockMinimoData = [];
+
+// Una instancia por gráfico: se destruye antes de dibujar resultados nuevos.
+const reportCharts = { stockSucursal: null, ventas: null, facturacionCliente: null, stockMinimo: null };
+const chartPalette = ["#2563eb", "#1e3a8a", "#60a5fa", "#93c5fd", "#64748b", "#0f766e", "#38bdf8", "#818cf8", "#0ea5e9", "#475569"];
 
 document.addEventListener("DOMContentLoaded", () => {
     configurarNavegacion();
@@ -23,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     cargarSucursales();
     consultarProductos();
     consultarEntregas();
+    inicializarFechasFacturacion();
 });
 
 function configurarNavegacion() {
@@ -57,6 +65,21 @@ function configurarFormularios() {
         consultarEntregas();
     });
 
+    $("#formStockSucursal").addEventListener("submit", (event) => {
+        event.preventDefault();
+        consultarStockSucursal();
+    });
+
+    $("#formFacturacionCliente").addEventListener("submit", (event) => {
+        event.preventDefault();
+        consultarFacturacionCliente();
+    });
+
+    $("#formStockMinimo").addEventListener("submit", (event) => {
+        event.preventDefault();
+        consultarStockMinimo();
+    });
+
     $("#sucursalVentas").addEventListener("change", cargarEmpleados);
 }
 
@@ -78,6 +101,24 @@ function configurarExportaciones() {
         ["Tipo", "Número de orden", "Cliente/Proveedor", "Estado actual", "Fecha estimada", "Días de atraso", "Unidades pendientes"],
         entregasData.map(e => [e.tipo, e.numeroOrden, e.clienteProveedor, e.estadoActual, e.fechaEntregaEstimada, e.diasAtraso, e.unidadesPendientes])
     ));
+
+    $("#exportarStockSucursal").addEventListener("click", () => exportarCSV(
+        "stock_por_sucursal.csv",
+        ["Código", "Producto", "Sucursal", "Cantidad actual", "Stock mínimo"],
+        stockSucursalData.map(x => [x.codigo, x.producto, x.sucursal, x.cantidadActual, x.stockMinimo])
+    ));
+
+    $("#exportarFacturacionCliente").addEventListener("click", () => exportarCSV(
+        "facturacion_por_tipo_cliente.csv",
+        ["Tipo de cliente", "Cantidad de facturas", "Total facturado", "Promedio por factura"],
+        facturacionClienteData.map(x => [x.tipoCliente, x.cantidadFacturas, x.totalFacturado, x.promedioPorFactura])
+    ));
+
+    $("#exportarStockMinimo").addEventListener("click", () => exportarCSV(
+        "productos_bajo_stock_minimo.csv",
+        ["Sucursal", "Código", "Producto", "Cantidad actual", "Stock mínimo", "Faltante para reposición"],
+        stockMinimoData.map(x => [x.sucursal, x.codigo, x.producto, x.cantidadActual, x.stockMinimo, x.faltanteReposicion])
+    ));
 }
 
 function inicializarFechas() {
@@ -90,6 +131,14 @@ function inicializarFechas() {
 
     $("#fechaReferencia").value = fechaLocal;
     $("#anioVentas").value = hoy.getFullYear();
+}
+
+function inicializarFechasFacturacion() {
+    const hoy = new Date();
+    const fechaHasta = [hoy.getFullYear(), String(hoy.getMonth() + 1).padStart(2, "0"), String(hoy.getDate()).padStart(2, "0")].join("-");
+    const primerDiaMes = [hoy.getFullYear(), String(hoy.getMonth() + 1).padStart(2, "0"), "01"].join("-");
+    $("#fechaDesdeFacturacion").value = primerDiaMes;
+    $("#fechaHastaFacturacion").value = fechaHasta;
 }
 
 async function apiGet(url) {
@@ -208,8 +257,10 @@ async function cargarSucursales() {
         const sucursales = await apiGet(`${API_REPORT}/sucursales`);
         const select = $("#sucursalVentas");
 
+        const opciones = sucursales.map(s => `<option value="${escapeHTML(s.descripcion)}">${escapeHTML(s.descripcion)}</option>`).join("");
         select.innerHTML = `<option value="">Todas las sucursales</option>` +
             sucursales.map(s => `<option value="${s.sucursalID}">${escapeHTML(s.descripcion)}</option>`).join("");
+        $("#sucursalStockMinimo").innerHTML = `<option value="">Todas las sucursales</option>` + opciones;
     } catch (error) {
         mostrarMensaje(`No se pudieron cargar las sucursales: ${error.message}`);
     }
@@ -234,7 +285,7 @@ async function cargarEmpleados() {
     }
 }
 
-Ventas porasync function consultarVentas() {
+async function consultarVentas() {
     ocultarMensaje();
 
     const anio = Number($("#anioVentas").value);
@@ -254,7 +305,8 @@ Ventas porasync function consultarVentas() {
     setLoading("#formVentas button[type='submit']", true);
 
     try {
-        ventasData = await apiGet(`${API_REPORT}/empleados-sucursales?${params.toString()}`);
+        const respuesta = await apiGet(`${API_REPORT}/empleados-sucursales?${params.toString()}`);
+        ventasData = Array.isArray(respuesta) ? respuesta : [];
         renderVentas(ventasData, anio);
     } catch (error) {
         ventasData = [];
@@ -267,6 +319,7 @@ Ventas porasync function consultarVentas() {
 
 function renderVentas(data, anio) {
     const tbody = $("#tablaVentas");
+    renderVentasChart(data);
     const facturas = data.reduce((sum, item) => sum + Number(item.cantidadFacturas || 0), 0);
     const total = data.reduce((sum, item) => sum + Number(item.totalVentas || 0), 0);
 
@@ -341,6 +394,220 @@ function renderEntregas(data, fecha) {
             <td class="text-end fw-semibold">${numberFormatter.format(item.unidadesPendientes ?? 0)}</td>
         </tr>
     `).join("");
+}
+
+/* REPORTE 2 - MAXI: GET /api/report/stock-sucursal/{codigoProducto} */
+async function consultarStockSucursal() {
+    ocultarMensaje();
+    const codigo = $("#codigoProductoStock").value.trim();
+    if (!codigo) {
+        mostrarMensaje("Ingresá el código del producto.");
+        return;
+    }
+
+    setLoading("#formStockSucursal button[type='submit']", true);
+    try {
+        const respuesta = await apiGet(`${API_REPORT}/stock-sucursal/${encodeURIComponent(codigo)}`);
+        stockSucursalData = Array.isArray(respuesta) ? respuesta : [];
+        renderStockSucursal(stockSucursalData, codigo);
+    } catch (error) {
+        stockSucursalData = [];
+        renderStockSucursal([], codigo);
+        mostrarMensaje(error.message);
+    } finally {
+        setLoading("#formStockSucursal button[type='submit']", false);
+    }
+}
+
+function renderStockSucursal(data, codigo) {
+    const tbody = $("#tablaStockSucursal");
+    renderStockSucursalChart(data);
+    const unidades = data.reduce((sum, item) => sum + Number(item.cantidadActual || 0), 0);
+    $("#totalStockSucursales").textContent = numberFormatter.format(data.length);
+    $("#unidadesStockSucursales").textContent = numberFormatter.format(unidades);
+    $("#infoStockSucursal").textContent = `Código consultado: ${codigo}. ${data.length} sucursal(es) encontrada(s).`;
+    $("#exportarStockSucursal").disabled = data.length === 0;
+
+    if (!data.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No se encontró stock para ese código de producto.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = data.map(item => `
+        <tr>
+            <td>${escapeHTML(item.codigo)}</td>
+            <td>${escapeHTML(item.producto)}</td>
+            <td>${escapeHTML(item.sucursal)}</td>
+            <td class="text-end fw-semibold">${numberFormatter.format(item.cantidadActual ?? 0)}</td>
+            <td class="text-end">${numberFormatter.format(item.stockMinimo ?? 0)}</td>
+        </tr>
+    `).join("");
+}
+
+/* REPORTE 4 - MAXI: GET /api/report/facturacion-tipo-cliente */
+async function consultarFacturacionCliente() {
+    ocultarMensaje();
+    const fechaDesde = $("#fechaDesdeFacturacion").value;
+    const fechaHasta = $("#fechaHastaFacturacion").value;
+
+    if (!fechaDesde || !fechaHasta) {
+        mostrarMensaje("Seleccioná las dos fechas del período.");
+        return;
+    }
+    if (fechaDesde > fechaHasta) {
+        mostrarMensaje("La fecha desde no puede ser posterior a la fecha hasta.");
+        return;
+    }
+
+    setLoading("#formFacturacionCliente button[type='submit']", true);
+    try {
+        const params = new URLSearchParams({ fechaDesde, fechaHasta });
+        const respuesta = await apiGet(`${API_REPORT}/facturacion-tipo-cliente?${params.toString()}`);
+        facturacionClienteData = Array.isArray(respuesta) ? respuesta : [];
+        renderFacturacionCliente(facturacionClienteData, fechaDesde, fechaHasta);
+    } catch (error) {
+        facturacionClienteData = [];
+        renderFacturacionCliente([], fechaDesde, fechaHasta);
+        mostrarMensaje(error.message);
+    } finally {
+        setLoading("#formFacturacionCliente button[type='submit']", false);
+    }
+}
+
+function renderFacturacionCliente(data, fechaDesde, fechaHasta) {
+    const tbody = $("#tablaFacturacionCliente");
+    renderFacturacionClienteChart(data);
+    const facturas = data.reduce((sum, item) => sum + Number(item.cantidadFacturas || 0), 0);
+    const total = data.reduce((sum, item) => sum + Number(item.totalFacturado || 0), 0);
+    $("#totalFacturasCliente").textContent = numberFormatter.format(facturas);
+    $("#totalFacturadoCliente").textContent = currencyFormatter.format(total);
+    $("#infoFacturacionCliente").textContent = `Período: ${formatearFecha(fechaDesde)} al ${formatearFecha(fechaHasta)}. ${data.length} tipo(s) de cliente.`;
+    $("#exportarFacturacionCliente").disabled = data.length === 0;
+
+    if (!data.length) {
+        tbody.innerHTML = `<tr><td colspan="4" class="empty-state">No se encontraron facturas para el período seleccionado.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = data.map(item => `
+        <tr>
+            <td>${escapeHTML(item.tipoCliente)}</td>
+            <td class="text-end">${numberFormatter.format(item.cantidadFacturas ?? 0)}</td>
+            <td class="text-end fw-semibold">${currencyFormatter.format(item.totalFacturado ?? 0)}</td>
+            <td class="text-end">${currencyFormatter.format(item.promedioPorFactura ?? 0)}</td>
+        </tr>
+    `).join("");
+}
+
+/* REPORTE 6 - MAXI: GET /api/report/stock-minimo?nombreSucursal= */
+async function consultarStockMinimo() {
+    ocultarMensaje();
+    const nombreSucursal = $("#sucursalStockMinimo").value;
+    const params = new URLSearchParams();
+    if (nombreSucursal) params.set("nombreSucursal", nombreSucursal);
+
+    setLoading("#formStockMinimo button[type='submit']", true);
+    try {
+        const query = params.toString();
+        const respuesta = await apiGet(`${API_REPORT}/stock-minimo${query ? `?${query}` : ""}`);
+        stockMinimoData = Array.isArray(respuesta) ? respuesta : [];
+        renderStockMinimo(stockMinimoData, nombreSucursal);
+    } catch (error) {
+        stockMinimoData = [];
+        renderStockMinimo([], nombreSucursal);
+        mostrarMensaje(error.message);
+    } finally {
+        setLoading("#formStockMinimo button[type='submit']", false);
+    }
+}
+
+function renderStockMinimo(data, nombreSucursal) {
+    const tbody = $("#tablaStockMinimo");
+    renderStockMinimoChart(data);
+    const faltante = data.reduce((sum, item) => sum + Number(item.faltanteReposicion || 0), 0);
+    $("#totalStockMinimo").textContent = numberFormatter.format(data.length);
+    $("#totalFaltanteReposicion").textContent = numberFormatter.format(faltante);
+    $("#infoStockMinimo").textContent = `${nombreSucursal ? `Sucursal: ${nombreSucursal}` : "Todas las sucursales"}. ${data.length} producto(s) requieren reposición.`;
+    $("#exportarStockMinimo").disabled = data.length === 0;
+
+    if (!data.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No se encontraron productos por debajo del stock mínimo.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = data.map(item => `
+        <tr>
+            <td>${escapeHTML(item.sucursal)}</td>
+            <td>${escapeHTML(item.codigo)}</td>
+            <td>${escapeHTML(item.producto)}</td>
+            <td class="text-end">${numberFormatter.format(item.cantidadActual ?? 0)}</td>
+            <td class="text-end">${numberFormatter.format(item.stockMinimo ?? 0)}</td>
+            <td class="text-end fw-semibold"><span class="badge-atraso">${numberFormatter.format(item.faltanteReposicion ?? 0)}</span></td>
+        </tr>
+    `).join("");
+}
+
+/* GRÁFICOS: se alimentan exclusivamente de los DTO devueltos por la API. */
+function prepararCanvas(chartKey, canvasId, emptyId, data) {
+    const canvas = document.getElementById(canvasId);
+    const empty = document.getElementById(emptyId);
+    if (reportCharts[chartKey]) { reportCharts[chartKey].destroy(); reportCharts[chartKey] = null; }
+    if (!canvas || !empty) return null;
+    if (!Array.isArray(data) || data.length === 0) {
+        canvas.classList.add("hidden"); empty.textContent = "No hay datos para representar con los filtros seleccionados."; empty.classList.add("visible"); return null;
+    }
+    if (typeof Chart === "undefined") {
+        canvas.classList.add("hidden"); empty.textContent = "No se pudo cargar Chart.js. Verificá la conexión a internet."; empty.classList.add("visible"); return null;
+    }
+    canvas.classList.remove("hidden"); empty.classList.remove("visible");
+    return canvas.getContext("2d");
+}
+
+function renderStockSucursalChart(data) {
+    const ctx = prepararCanvas("stockSucursal", "chartStockSucursal", "emptyChartStockSucursal", data);
+    if (!ctx) return;
+    reportCharts.stockSucursal = new Chart(ctx, {
+        type: "bar",
+        data: { labels: data.map(x => String(x.sucursal ?? "Sucursal sin nombre")), datasets: [
+            { label: "Cantidad actual", data: data.map(x => Number(x.cantidadActual ?? 0)), backgroundColor: "#2563eb", borderRadius: 5 },
+            { label: "Stock mínimo", data: data.map(x => Number(x.stockMinimo ?? 0)), backgroundColor: "#93c5fd", borderRadius: 5 }
+        ] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" }, tooltip: { callbacks: { label: c => `${c.dataset.label}: ${numberFormatter.format(c.parsed.y)} unidades` } } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: "Unidades" } }, x: { grid: { display: false } } } }
+    });
+}
+
+function renderVentasChart(data) {
+    const ctx = prepararCanvas("ventas", "chartVentas", "emptyChartVentas", data);
+    if (!ctx) return;
+    // Se conserva la granularidad del DTO: empleado + sucursal + período.
+    const labels = data.map(x => `${x.empleado ?? "Empleado"} · ${x.sucursal ?? "Sucursal"} · ${x.periodo ?? "Período"}`);
+    reportCharts.ventas = new Chart(ctx, {
+        type: "bar",
+        data: { labels, datasets: [{ label: "Total vendido", data: data.map(x => Number(x.totalVentas ?? 0)), backgroundColor: "#2563eb", borderRadius: 5 }] },
+        options: { responsive: true, maintainAspectRatio: false, indexAxis: "y", plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => currencyFormatter.format(c.parsed.x) } } }, scales: { x: { beginAtZero: true, title: { display: true, text: "Total vendido (ARS)" }, ticks: { callback: value => currencyFormatter.format(value), maxTicksLimit: 7 } }, y: { grid: { display: false } } } }
+    });
+}
+
+function renderFacturacionClienteChart(data) {
+    const ctx = prepararCanvas("facturacionCliente", "chartFacturacionCliente", "emptyChartFacturacionCliente", data);
+    if (!ctx) return;
+    reportCharts.facturacionCliente = new Chart(ctx, {
+        type: "doughnut",
+        data: { labels: data.map(x => String(x.tipoCliente ?? "Sin tipo")), datasets: [{ data: data.map(x => Number(x.totalFacturado ?? 0)), backgroundColor: chartPalette, borderColor: "#ffffff", borderWidth: 2, hoverOffset: 7 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: "62%", plugins: { legend: { position: "bottom" }, tooltip: { callbacks: { label: c => { const total = c.dataset.data.reduce((sum, value) => sum + Number(value || 0), 0); const amount = Number(c.parsed || 0); const pct = total > 0 ? amount / total * 100 : 0; return `${c.label}: ${currencyFormatter.format(amount)} (${pct.toFixed(1)}%)`; } } } } }
+    });
+}
+
+function renderStockMinimoChart(data) {
+    const ordered = [...data].sort((a, b) => Number(b.faltanteReposicion ?? 0) - Number(a.faltanteReposicion ?? 0)).slice(0, 10);
+    const ctx = prepararCanvas("stockMinimo", "chartStockMinimo", "emptyChartStockMinimo", ordered);
+    if (!ctx) return;
+    const labels = ordered.map(x => `${x.producto ?? "Producto"} · ${x.sucursal ?? "Sucursal"}`);
+    reportCharts.stockMinimo = new Chart(ctx, {
+        type: "bar",
+        data: { labels, datasets: [{ label: "Faltante para reposición", data: ordered.map(x => Number(x.faltanteReposicion ?? 0)), backgroundColor: "#2563eb", borderRadius: 5 }] },
+        options: { responsive: true, maintainAspectRatio: false, indexAxis: "y", plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${numberFormatter.format(c.parsed.x)} unidades faltantes` } } }, scales: { x: { beginAtZero: true, title: { display: true, text: "Unidades faltantes" }, ticks: { precision: 0 } }, y: { grid: { display: false } } } }
+    });
 }
 
 /* UTILIDADES */
