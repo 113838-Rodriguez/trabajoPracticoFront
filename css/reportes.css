@@ -1,0 +1,286 @@
+
+/* =====================================
+   REPORTES - ESTILOS GENERALES
+===================================== */
+.page-heading {
+    margin-bottom: 25px;
+}
+
+.page-heading h2 {
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+
+.page-heading p {
+    color: #64748b;
+    margin: 0;
+}
+
+/* =====================================
+   TARJETAS DE REPORTES
+===================================== */
+.reports-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.report-card {
+    background-color: white;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    transition: transform 0.2s;
+}
+
+.report-card:hover {
+    transform: translateY(-4px);
+}
+
+.report-icon {
+    width: 48px;
+    height: 48px;
+    background-color: #dbeafe;
+    color: #2563eb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    font-size: 22px;
+    margin-bottom: 18px;
+}
+
+.report-number {
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.report-card h3 {
+    color: #1e293b;
+    margin: 12px 0;
+}
+
+.report-card p {
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 65px;
+}
+
+/* =====================================
+   BOTONES
+===================================== */
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 11px 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #1e3a8a;
+}
+
+.btn-close {
+    background-color: #dbeafe;
+    color: #1e3a8a;
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* =====================================
+   SECCION DE REPORTES
+===================================== */
+.report-section {
+    background-color: white;
+    margin-top: 30px;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.section-header h2 {
+    color: #1e3a8a;
+    margin-bottom: 6px;
+}
+
+.section-header p {
+    color: #64748b;
+    margin: 0;
+}
+
+/* =====================================
+   FORMULARIOS
+===================================== */
+.filter-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding-bottom: 25px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 190px;
+}
+
+.form-group label {
+    color: #334155;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+    padding: 11px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    background-color: white;
+    color: #1e293b;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px #dbeafe;
+}
+
+.form-group input:disabled,
+.form-group select:disabled {
+    background-color: #f1f5f9;
+    cursor: not-allowed;
+}
+
+/* =====================================
+   RESULTADOS
+===================================== */
+.results-container {
+    margin-top: 25px;
+}
+
+.results-header {
+    margin-bottom: 15px;
+}
+
+.results-header h3 {
+    color: #1e293b;
+    margin-bottom: 5px;
+}
+
+.results-header span {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+thead {
+    background-color: #1e3a8a;
+    color: white;
+}
+
+th, td {
+    padding: 13px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+tbody tr:hover {
+    background-color: #eff6ff;
+}
+
+tbody td {
+    color: #334155;
+}
+
+/* =====================================
+   MENSAJES
+===================================== */
+.message {
+    margin-top: 20px;
+    color: #2563eb;
+    padding: 15px;
+    background-color: #dbeafe;
+    border-radius: 8px;
+}
+
+.error-message {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-radius: 8px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* =====================================
+   RESPONSIVE
+===================================== */
+@media (max-width: 1000px) {
+
+    .reports-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+
+    .reports-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-form {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .form-group {
+        width: 100%;
+    }
+
+    .filter-form button {
+        width: 100%;
+    }
+
+    .report-section {
+        padding: 18px;
+    }
+}
