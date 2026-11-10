@@ -1,446 +1,385 @@
+const API_BASE_URL = "https://localhost:7236";
+const API_REPORT = `${API_BASE_URL}/api/report`;
 
-// ==========================================
-// ELEMENTOS DEL DOM
-// ==========================================
-const reportSection = document.getElementById("reportSection");
+const $ = (selector) => document.querySelector(selector);
 
-const formProductos = document.getElementById("formProductos");
-const formVentas = document.getElementById("formVentas");
-const formEntregas = document.getElementById("formEntregas");
-
-const reportTitle = document.getElementById("reportTitle");
-const reportDescription = document.getElementById("reportDescription");
-
-const loading = document.getElementById("loading");
-const errorMessage = document.getElementById("errorMessage");
-
-const resultsContainer = document.getElementById("resultsContainer");
-const tableHead = document.getElementById("tableHead");
-const tableBody = document.getElementById("tableBody");
-const resultCount = document.getElementById("resultCount");
-
-const sucursalSelect = document.getElementById("sucursal");
-const empleadoSelect = document.getElementById("empleado");
-
-// ==========================================
-// CONFIGURACION INICIAL
-// ==========================================
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("anio").value = new Date().getFullYear();
-
-    document.getElementById("fechaReferencia").value =
-        obtenerFechaActual();
-    document.getElementById("fechaReferencia").min = "2020-01-01";
-
-    cargarSucursales();
+const currencyFormatter = new Intl.NumberFormat("es-AR", {
+    style: "currency",
+    currency: "ARS",
+    minimumFractionDigits: 2
 });
 
-function obtenerFechaActual() {
+const numberFormatter = new Intl.NumberFormat("es-AR");
 
-    const fecha = new Date();
+let productosData = []; 
+let ventasData = [];
+let entregasData = [];
 
-    const anio = fecha.getFullYear();
-    const mes = String(fecha.getMonth() + 1).padStart(2, "0");
-    const dia = String(fecha.getDate()).padStart(2, "0");
+document.addEventListener("DOMContentLoaded", () => {
+    configurarNavegacion();
+    configurarFormularios();
+    configurarExportaciones();
+    inicializarFechas();
+    cargarSucursales();
+    consultarProductos();
+    consultarEntregas();
+});
 
-    return `${anio}-${mes}-${dia}`;
-}
+function configurarNavegacion() {
+    document.querySelectorAll(".report-option").forEach((button) => {
+        button.addEventListener("click", () => {
+            const report = button.dataset.report;
 
-// ==========================================
-// SELECCION DE REPORTES
-// ==========================================
-function seleccionarReporte(tipo) {
-    limpiarResultados();
-    ocultarFormularios();
+            document.querySelectorAll(".report-option").forEach((item) => {
+                item.classList.toggle("active", item === button);
+            });
 
-    reportSection.classList.remove("hidden");
-
-    switch (tipo) {
-        case "productos":
-            reportTitle.textContent = "Productos sin ventas";
-            reportDescription.textContent =
-                "Consultá los productos que no registraron ventas durante los últimos N días.";
-
-            formProductos.classList.remove("hidden");
-            break;
-
-        case "ventas":
-            reportTitle.textContent = "Ventas por empleado y sucursal";
-            reportDescription.textContent =
-                "Filtrá las ventas mensuales por año, sucursal y empleado.";
-
-            formVentas.classList.remove("hidden");
-            break;
-
-        case "entregas":
-            reportTitle.textContent = "Entregas atrasadas";
-            reportDescription.textContent =
-                "Consultá los pedidos y reposiciones atrasados según una fecha de referencia.";
-
-            formEntregas.classList.remove("hidden");
-            break;
-    }
-
-    reportSection.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
+            document.querySelectorAll(".report-panel").forEach((panel) => {
+                panel.classList.toggle("active", panel.id === `panel-${report}`);
+            });
+        });
     });
 }
 
-function cerrarReporte() {
+function configurarFormularios() {
+    $("#formProductos").addEventListener("submit", (event) => {
+        event.preventDefault();
+        consultarProductos();
+    });
 
-    reportSection.classList.add("hidden");
+    $("#formVentas").addEventListener("submit", (event) => {
+        event.preventDefault();
+        consultarVentas();
+    });
 
-    ocultarFormularios();
-    limpiarResultados();
+    $("#formEntregas").addEventListener("submit", (event) => {
+        event.preventDefault();
+        consultarEntregas();
+    });
+
+    $("#sucursalVentas").addEventListener("change", cargarEmpleados);
 }
 
-function ocultarFormularios() {
+function configurarExportaciones() {
+    $("#exportarProductos").addEventListener("click", () => exportarCSV(
+        "productos_sin_ventas.csv",
+        ["Código", "Descripción", "Stock actual", "Precio unitario", "Capital inmovilizado"],
+        productosData.map(p => [p.codigo, p.descripcion, p.stockActual, p.precioUnitario, p.capitalInmovilizado])
+    ));
 
-    formProductos.classList.add("hidden");
-    formVentas.classList.add("hidden");
-    formEntregas.classList.add("hidden");
+    $("#exportarVentas").addEventListener("click", () => exportarCSV(
+        "ventas_mensuales_por_empleado.csv",
+        ["Sucursal", "Período", "Empleado", "Cantidad de facturas", "Total ventas"],
+        ventasData.map(v => [v.sucursal, v.periodo, v.empleado, v.cantidadFacturas, v.totalVentas])
+    ));
+
+    $("#exportarEntregas").addEventListener("click", () => exportarCSV(
+        "entregas_atrasadas.csv",
+        ["Tipo", "Número de orden", "Cliente/Proveedor", "Estado actual", "Fecha estimada", "Días de atraso", "Unidades pendientes"],
+        entregasData.map(e => [e.tipo, e.numeroOrden, e.clienteProveedor, e.estadoActual, e.fechaEntregaEstimada, e.diasAtraso, e.unidadesPendientes])
+    ));
 }
 
-// ==========================================
-// CONSULTA 1 - PRODUCTOS SIN VENTAS
-// ==========================================
-formProductos.addEventListener("submit", async (e) => {
+function inicializarFechas() {
+    const hoy = new Date();
+    const fechaLocal = [
+        hoy.getFullYear(),
+        String(hoy.getMonth() + 1).padStart(2, "0"),
+        String(hoy.getDate()).padStart(2, "0")
+    ].join("-");
 
-    e.preventDefault();
+    $("#fechaReferencia").value = fechaLocal;
+    $("#anioVentas").value = hoy.getFullYear();
+}
 
-    const dias = Number(document.getElementById("dias").value);
+async function apiGet(url) {
+    let response;
 
+    try {
+        response = await fetch(url, {
+            method: "GET",
+            headers: { "Accept": "application/json" }
+        });
+    } catch (error) {
+        throw new Error(
+            "No se pudo conectar con la API. Verificá que el proyecto ASP.NET Core esté ejecutándose, " +
+            "que API_BASE_URL sea correcto y que CORS permita el origen del frontend."
+        );
+    }
+
+    const contentType = response.headers.get("content-type") || "";
+    const data = contentType.includes("application/json")
+        ? await response.json()
+        : await response.text();
+
+    if (!response.ok) {
+        const message = typeof data === "object" && data !== null
+            ? (data.mensaje || data.title || data.detail || "Ocurrió un error al consultar el servidor.")
+            : (data || "Ocurrió un error al consultar el servidor.");
+
+        throw new Error(message);
+    }
+
+    return data;
+}
+
+function mostrarMensaje(mensaje, tipo = "danger") {
+    const alert = $("#mensajeGlobal");
+    alert.className = `alert alert-${tipo} mt-3`;
+    alert.textContent = mensaje;
+    alert.classList.remove("d-none");
+}
+
+function ocultarMensaje() {
+    $("#mensajeGlobal").classList.add("d-none");
+}
+
+function setLoading(buttonSelector, loading, text = "Consultar") {
+    const button = $(buttonSelector);
+    if (!button) return;
+
+    if (loading) {
+        button.dataset.originalHtml = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status"></span>Consultando...`;
+    } else {
+        button.disabled = false;
+        if (button.dataset.originalHtml) {
+            button.innerHTML = button.dataset.originalHtml;
+        } else {
+            button.textContent = text;
+        }
+    }
+}
+
+/* REPORTE 1: GET /api/report/productos-sin-ventas/{dias} */
+async function consultarProductos() {
+    ocultarMensaje();
+
+    const dias = Number($("#diasSinVentas").value);
     if (!Number.isInteger(dias) || dias <= 0) {
-        mostrarError("Ingresá una cantidad de días mayor a cero.");
+        mostrarMensaje("La cantidad de días debe ser un número entero mayor a cero.");
         return;
     }
 
-    try {
-
-        iniciarConsulta();
-
-        const datos = await obtenerProductosSinVentas(dias);
-
-        const columnas = [
-            { titulo: "Código", campo: "codigo" },
-            { titulo: "Descripción", campo: "descripcion" },
-            { titulo: "Stock actual", campo: "stockActual" },
-            { titulo: "Precio unitario", campo: "precioUnitario", formato: "moneda" },
-            { titulo: "Capital inmovilizado", campo: "capitalInmovilizado", formato: "moneda" }
-        ];
-
-        mostrarResultados(datos, columnas);
-
-    }
-    catch (error) {
-
-        mostrarError(error.message);
-
-    }
-    finally {
-
-        finalizarConsulta();
-
-    }
-
-});
-
-
-// ==========================================
-// CONSULTA 3 - SUCURSALES
-// ==========================================
-async function cargarSucursales() {
+    setLoading("#formProductos button[type='submit']", true);
 
     try {
-        const sucursales = await obtenerSucursales();
-
-        sucursalSelect.innerHTML =
-            '<option value="">Todas las sucursales</option>';
-
-        sucursales.forEach(sucursal => {
-
-            const option = document.createElement("option");
-
-            option.value = sucursal.sucursalID;
-            option.textContent = sucursal.descripcion;
-
-            sucursalSelect.appendChild(option);
-
-        });
-    }
-    catch (error) {
-        console.error("Error al cargar sucursales:", error);
+        productosData = await apiGet(`${API_REPORT}/productos-sin-ventas/${dias}`);
+        renderProductos(productosData, dias);
+    } catch (error) {
+        productosData = [];
+        renderProductos([], dias);
+        mostrarMensaje(error.message);
+    } finally {
+        setLoading("#formProductos button[type='submit']", false);
     }
 }
 
+function renderProductos(data, dias) {
+    const tbody = $("#tablaProductos");
+    $("#totalProductos").textContent = numberFormatter.format(data.length);
 
-// ==========================================
-// CONSULTA 3 - EMPLEADOS POR SUCURSAL
-// ==========================================
-sucursalSelect.addEventListener("change", async () => {
+    const capital = data.reduce((sum, item) => sum + Number(item.capitalInmovilizado || 0), 0);
+    $("#capitalInmovilizado").textContent = currencyFormatter.format(capital);
+    $("#infoProductos").textContent = `Productos sin ventas en los últimos ${dias} días: ${data.length} resultado(s).`;
 
-    const sucursalID = sucursalSelect.value;
+    $("#exportarProductos").disabled = data.length === 0;
 
-    empleadoSelect.innerHTML =
-        '<option value="">Todos los empleados</option>';
-
-    empleadoSelect.disabled = true;
-
-    if (!sucursalID)
+    if (!data.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No se encontraron productos para este período.</td></tr>`;
         return;
+    }
+
+    tbody.innerHTML = data.map(item => `
+        <tr>
+            <td>${escapeHTML(item.codigo)}</td>
+            <td>${escapeHTML(item.descripcion)}</td>
+            <td class="text-end">${numberFormatter.format(item.stockActual ?? 0)}</td>
+            <td class="text-end">${currencyFormatter.format(item.precioUnitario ?? 0)}</td>
+            <td class="text-end fw-semibold">${currencyFormatter.format(item.capitalInmovilizado ?? 0)}</td>
+        </tr>
+    `).join("");
+}
+
+/* REPORTE 3: sucursales, empleados y ventas mensuales */
+async function cargarSucursales() {
+    try {
+        const sucursales = await apiGet(`${API_REPORT}/sucursales`);
+        const select = $("#sucursalVentas");
+
+        select.innerHTML = `<option value="">Todas las sucursales</option>` +
+            sucursales.map(s => `<option value="${s.sucursalID}">${escapeHTML(s.descripcion)}</option>`).join("");
+    } catch (error) {
+        mostrarMensaje(`No se pudieron cargar las sucursales: ${error.message}`);
+    }
+}
+
+async function cargarEmpleados() {
+    const sucursalID = $("#sucursalVentas").value;
+    const select = $("#empleadoVentas");
+
+    select.innerHTML = `<option value="">Todos los empleados</option>`;
+    select.disabled = !sucursalID;
+
+    if (!sucursalID) return;
 
     try {
-        const empleados = await obtenerEmpleados(sucursalID);
-
-        empleados.forEach(empleado => {
-            const option = document.createElement("option");
-
-            option.value = empleado.empleadoID;
-            option.textContent = empleado.nombre;
-
-            empleadoSelect.appendChild(option);
-        });
-
-        empleadoSelect.disabled = false;
+        const empleados = await apiGet(`${API_REPORT}/empleados/${encodeURIComponent(sucursalID)}`);
+        select.innerHTML = `<option value="">Todos los empleados</option>` +
+            empleados.map(e => `<option value="${e.empleadoID}">${escapeHTML(e.nombre)}</option>`).join("");
+        select.disabled = false;
+    } catch (error) {
+        mostrarMensaje(`No se pudieron cargar los empleados: ${error.message}`);
     }
-    catch (error) {
-        mostrarError(error.message);
-    }
+}
 
-});
+Ventas porasync function consultarVentas() {
+    ocultarMensaje();
 
-
-// ==========================================
-// CONSULTA 3 - VENTAS POR EMPLEADO
-// ==========================================
-
-formVentas.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const anio = Number(document.getElementById("anio").value);
-
-    const sucursalID = sucursalSelect.value;
-    const empleadoId = empleadoSelect.value;
-
+    const anio = Number($("#anioVentas").value);
+    const sucursalID = $("#sucursalVentas").value;
+    const empleadoId = $("#empleadoVentas").value;
     const anioActual = new Date().getFullYear();
 
     if (!Number.isInteger(anio) || anio < 2000 || anio > anioActual) {
-        mostrarError(`Ingresá un año entre 2000 y ${anioActual}.`);
+        mostrarMensaje(`Ingresá un año entre 2000 y ${anioActual}.`);
         return;
     }
 
+    const params = new URLSearchParams({ anio: String(anio) });
+    if (sucursalID) params.append("sucursalID", sucursalID);
+    if (empleadoId) params.append("empleadoId", empleadoId);
+
+    setLoading("#formVentas button[type='submit']", true);
+
     try {
-        iniciarConsulta();
-
-        const filtros = {
-            anio: anio,
-            sucursalID: sucursalID,
-            empleadoId: empleadoId
-        };
-
-        const datos = await obtenerVentas(filtros);
-
-        const columnas = [
-            { titulo: "Sucursal", campo: "sucursal" },
-            { titulo: "Período", campo: "periodo" },
-            { titulo: "Empleado", campo: "empleado" },
-            { titulo: "Cantidad de facturas", campo: "cantidadFacturas" },
-            { titulo: "Total de ventas", campo: "totalVentas", formato: "moneda" }
-        ];
-
-        mostrarResultados(datos, columnas);
-
+        ventasData = await apiGet(`${API_REPORT}/empleados-sucursales?${params.toString()}`);
+        renderVentas(ventasData, anio);
+    } catch (error) {
+        ventasData = [];
+        renderVentas([], anio);
+        mostrarMensaje(error.message);
+    } finally {
+        setLoading("#formVentas button[type='submit']", false);
     }
-    catch (error) {
+}
 
-        mostrarError(error.message);
+function renderVentas(data, anio) {
+    const tbody = $("#tablaVentas");
+    const facturas = data.reduce((sum, item) => sum + Number(item.cantidadFacturas || 0), 0);
+    const total = data.reduce((sum, item) => sum + Number(item.totalVentas || 0), 0);
 
-    }
-    finally {
+    $("#totalFacturas").textContent = numberFormatter.format(facturas);
+    $("#totalVentas").textContent = currencyFormatter.format(total);
+    $("#infoVentas").textContent = `Resultados correspondientes al año ${anio}: ${data.length} registro(s).`;
+    $("#exportarVentas").disabled = data.length === 0;
 
-        finalizarConsulta();
-
+    if (!data.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No se encontraron ventas con los filtros seleccionados.</td></tr>`;
+        return;
     }
 
-});
+    tbody.innerHTML = data.map(item => `
+        <tr>
+            <td>${escapeHTML(item.sucursal)}</td>
+            <td>${escapeHTML(item.periodo)}</td>
+            <td>${escapeHTML(item.empleado)}</td>
+            <td class="text-end">${numberFormatter.format(item.cantidadFacturas ?? 0)}</td>
+            <td class="text-end fw-semibold">${currencyFormatter.format(item.totalVentas ?? 0)}</td>
+        </tr>
+    `).join("");
+}
 
+/* REPORTE 5: GET /api/report/entregas-atrasadas?fechaReferencia= */
+async function consultarEntregas() {
+    ocultarMensaje();
 
-// ==========================================
-// CONSULTA 5 - ENTREGAS ATRASADAS
-// ==========================================
-
-formEntregas.addEventListener("submit", async (e) => {
-
-    e.preventDefault();
-
-    const fecha = document.getElementById("fechaReferencia").value;
-
+    const fecha = $("#fechaReferencia").value;
     if (!fecha) {
-
-        mostrarError("Seleccioná una fecha de referencia.");
+        mostrarMensaje("Seleccioná una fecha de referencia.");
         return;
-
     }
+
+    setLoading("#formEntregas button[type='submit']", true);
 
     try {
-
-        iniciarConsulta();
-
-        const datos = await obtenerEntregasAtrasadas(fecha);
-
-        const columnas = [
-            { titulo: "Tipo", campo: "tipo" },
-            { titulo: "N.º de orden", campo: "numeroOrden" },
-            { titulo: "Cliente / Proveedor", campo: "clienteProveedor" },
-            { titulo: "Estado actual", campo: "estadoActual" },
-            { titulo: "Fecha estimada", campo: "fechaEntregaEstimada", formato: "fecha" },
-            { titulo: "Días de atraso", campo: "diasAtraso" },
-            { titulo: "Unidades pendientes", campo: "unidadesPendientes" }
-        ];
-
-        mostrarResultados(datos, columnas);
-
+        const params = new URLSearchParams({ fechaReferencia: fecha });
+        entregasData = await apiGet(`${API_REPORT}/entregas-atrasadas?${params.toString()}`);
+        renderEntregas(entregasData, fecha);
+    } catch (error) {
+        entregasData = [];
+        renderEntregas([], fecha);
+        mostrarMensaje(error.message);
+    } finally {
+        setLoading("#formEntregas button[type='submit']", false);
     }
-    catch (error) {
+}
 
-        mostrarError(error.message);
+function renderEntregas(data, fecha) {
+    const tbody = $("#tablaEntregas");
+    const unidades = data.reduce((sum, item) => sum + Number(item.unidadesPendientes || 0), 0);
 
-    }
-    finally {
+    $("#totalEntregas").textContent = numberFormatter.format(data.length);
+    $("#unidadesPendientes").textContent = numberFormatter.format(unidades);
+    $("#infoEntregas").textContent = `Fecha de referencia: ${formatearFecha(fecha)}. ${data.length} resultado(s).`;
+    $("#exportarEntregas").disabled = data.length === 0;
 
-        finalizarConsulta();
-
-    }
-
-});
-
-
-// ==========================================
-// MOSTRAR RESULTADOS EN DATAGRID
-// ==========================================
-
-function mostrarResultados(datos, columnas) {
-
-    limpiarResultados();
-
-    if (!Array.isArray(datos) || datos.length === 0) {
-
-        mostrarError("No se encontraron resultados para los filtros seleccionados.");
+    if (!data.length) {
+        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No se encontraron entregas atrasadas para esa fecha.</td></tr>`;
         return;
-
     }
 
-    // Crear encabezados
-
-    const encabezado = document.createElement("tr");
-
-    columnas.forEach(columna => {
-
-        const th = document.createElement("th");
-
-        th.textContent = columna.titulo;
-
-        encabezado.appendChild(th);
-
-    });
-
-    tableHead.appendChild(encabezado);
-
-
-    // Crear filas
-
-    datos.forEach(registro => {
-
-        const fila = document.createElement("tr");
-
-        columnas.forEach(columna => {
-
-            const td = document.createElement("td");
-
-            let valor = registro[columna.campo];
-
-            if (valor === null || valor === undefined) {
-                valor = "-";
-            }
-            else if (columna.formato === "moneda") {
-
-                valor = Number(valor).toLocaleString("es-AR", {
-                    style: "currency",
-                    currency: "ARS"
-                });
-
-            }
-            else if (columna.formato === "fecha") {
-
-                const fecha = String(valor).substring(0, 10);
-                const partes = fecha.split("-");
-
-                valor = partes.length === 3
-                    ? `${partes[2]}/${partes[1]}/${partes[0]}`
-                    : valor;
-
-            }
-
-            td.textContent = valor;
-
-            fila.appendChild(td);
-
-        });
-
-        tableBody.appendChild(fila);
-
-    });
-
-    resultCount.textContent =
-        `${datos.length} registro(s) encontrado(s)`;
-
-    resultsContainer.classList.remove("hidden");
-
+    tbody.innerHTML = data.map(item => `
+        <tr>
+            <td>${escapeHTML(item.tipo)}</td>
+            <td>${escapeHTML(item.numeroOrden)}</td>
+            <td>${escapeHTML(item.clienteProveedor)}</td>
+            <td><span class="badge-estado">${escapeHTML(item.estadoActual)}</span></td>
+            <td>${formatearFecha(item.fechaEntregaEstimada)}</td>
+            <td class="text-end"><span class="badge-atraso">${numberFormatter.format(item.diasAtraso ?? 0)} días</span></td>
+            <td class="text-end fw-semibold">${numberFormatter.format(item.unidadesPendientes ?? 0)}</td>
+        </tr>
+    `).join("");
 }
 
-
-// ==========================================
-// CONTROL DE ESTADOS
-// ==========================================
-
-function iniciarConsulta() {
-
-    limpiarResultados();
-
-    errorMessage.classList.add("hidden");
-
-    loading.classList.remove("hidden");
-
+/* UTILIDADES */
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[character]);
 }
 
-function finalizarConsulta() {
-
-    loading.classList.add("hidden");
-
+function formatearFecha(value) {
+    if (!value) return "—";
+    // DateOnly suele llegar como YYYY-MM-DD. Se evita el desfase de zona horaria.
+    const datePart = String(value).substring(0, 10);
+    const [year, month, day] = datePart.split("-");
+    if (!year || !month || !day) return escapeHTML(value);
+    return `${day}/${month}/${year}`;
 }
 
-function limpiarResultados() {
+function exportarCSV(filename, headers, rows) {
+    if (!rows.length) return;
 
-    tableHead.innerHTML = "";
-    tableBody.innerHTML = "";
+    const csvCell = value => `"${String(value ?? "").replace(/"/g, '""')}"`;
+    const content = [headers, ...rows]
+        .map(row => row.map(csvCell).join(";"))
+        .join("\r\n");
 
-    resultsContainer.classList.add("hidden");
-    errorMessage.classList.add("hidden");
+    // BOM para que Excel reconozca correctamente caracteres como ñ y tildes.
+    const blob = new Blob(["\uFEFF" + content], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
 
-    resultCount.textContent = "0 registros";
-
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
 }
-
-function mostrarError(mensaje) {
-
-    errorMessage.textContent = mensaje;
-
-    errorMessage.classList.remove("hidden");
-}
-
-// ==========================================
-// FUNCIONES GLOBALES
-// ==========================================
-window.seleccionarReporte = seleccionarReporte;
-window.cerrarReporte = cerrarReporte;
