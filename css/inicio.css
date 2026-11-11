@@ -1,0 +1,151 @@
+:root {
+    --azul-oscuro: #1e3a8a;
+    --azul-principal: #2563eb;
+    --azul-claro: #60a5fa;
+    --fondo: #eff6ff;
+    --texto: #0f172a;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: var(--texto);
+    background-color: var(--fondo);
+    margin: 0;
+}
+
+/* 2. BARRA DE NAVEGACIÓN (NAVBAR)*/
+.navbar.bg-primary {
+    background-color: var(--azul-oscuro) !important;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #ffffff !important;
+}
+
+.navbar-nav .nav-link {
+    color: #dbeafe !important;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: var(--azul-claro) !important;
+}
+
+/* Botón Iniciar Sesión en la Navbar */
+.navbar .btn-outline-light {
+    border-color: #ffffff;
+    color: #ffffff;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.navbar .btn-outline-light:hover {
+    background-color: var(--azul-principal);
+    border-color: var(--azul-principal);
+    color: #ffffff;
+}
+
+/* 3. BANNER PRINCIPAL (HERO SECTION)*/
+.hero-section {
+    background: linear-gradient(135deg, var(--azul-oscuro), var(--azul-principal));
+    box-shadow: 0 4px 15px rgba(30, 58, 138, 0.2);
+}
+
+.hero-section h1 {
+    letter-spacing: -0.5px;
+}
+
+.hero-section .btn-light {
+    color: var(--azul-oscuro) !important;
+    font-weight: bold;
+    border: none;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.hero-section .btn-light:hover {
+    background-color: var(--fondo);
+    transform: translateY(-2px);
+}
+
+.hero-section .btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+/4. SECCIÓN SOBRE NOSOTROS Y BENEFICIOS/
+.badge.bg-primary {
+    background-color: var(--azul-principal) !important;
+}
+
+.text-primary {
+    color: var(--azul-principal) !important;
+}
+
+/* Tarjetas de Beneficios */
+.card {
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(30, 58, 138, 0.12) !important;
+}
+
+.feature-icon {
+    background-color: var(--azul-principal) !important;
+}
+
+/* 5. CARRUSEL DE PROMOCIONES*/
+#carruselPromociones .carousel-item img {
+    height: 420px;
+    object-fit: cover;
+}
+
+.carousel-caption {
+    border-radius: 8px;
+    backdrop-filter: blur(4px);
+}
+
+/* 6. TARJETAS DE SUCURSALES*/
+#sucursales .card {
+    border: 1px solid #cbd5e1;
+}
+
+#sucursales .btn-outline-primary {
+    color: var(--azul-principal);
+    border-color: var(--azul-principal);
+    font-weight: 600;
+}
+
+#sucursales .btn-outline-primary:hover {
+    background-color: var(--azul-principal);
+    color: #ffffff;
+}
+
+/* 7. PIE DE PÁGINA (FOOTER)*/
+footer.bg-dark {
+    background-color: #0f172a !important; /* Tono muy oscuro del palette */
+}
+
+footer h5, footer h6 {
+    color: #ffffff !important;
+}
+
+footer .btn-outline-secondary {
+    color: #cbd5e1;
+    border-color: #475569;
+}
+
+footer .btn-outline-secondary:hover {
+    background-color: var(--azul-principal);
+    border-color: var(--azul-principal);
+    color: #ffffff;
+}

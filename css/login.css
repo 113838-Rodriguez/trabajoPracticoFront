@@ -10,16 +10,20 @@
 
 /* Fondo */
 body {
-    background: linear-gradient(135deg, #dbeafe, #eff6ff);
-    font-family: Arial, sans-serif;
+background: 
+    linear-gradient(135deg, rgba(30, 58, 138, 0.50), rgba(37, 99, 235, 0.40)),
+    url('https://img.magnific.com/foto-gratis/vista-superior-martillo-acero-otros-elementos-construccion-herramientas_23-2150576395.jpg?semt=ais_hybrid&w=740&q=80') center/cover no-repeat fixed;
+font-family: Arial, sans-serif;
+min-height: 100vh;
 }
 
 /* Contenedor */
 .login-container {
-    background-color: #ffffff;
+background-color: #ffffff;
     padding: 35px;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(30, 58, 138, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(30, 58, 138, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 /* Título */

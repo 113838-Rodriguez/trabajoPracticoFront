@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferreteria Troka - Inicio</title>
+    
+<!-- FAVICON -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%231e3a8a'><path d='M1 0 0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .707.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.27 3.27a.997.997 0 0 0 1.414 0l1.586-1.586a.997.997 0 0 0 0-1.414l-3.27-3.27a1 1 0 0 0-1.023-.242l-.914.305s-.671-.67-.968-.968l2.654-2.617c.28-.11.543-.266.772-.461a3 3 0 1 0-4.172-4.172l-2.617 2.654L3.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814L1 0zm9.646 10.646a.5.5 0 0 1 .708 0l2.914 2.915a.5.5 0 0 1-.707.707l-2.915-2.914a.5.5 0 0 1 0-.708z'/></svg>">
+
+<!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/Inicio.css">
+</head>
+<body>
+    <!-- 1. BARRA DE NAVEGACIÓN PRINCIPAL -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex items-center gap-2 font-bold" href="#">
+                <i class="bi bi-tools fs-4"></i>
+                <span>Ferretería Tronka</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarInicio">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarInicio">
+                <ul class="navbar-nav ms-auto me-3 mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#inicio">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#nosotros">Nosotros</a>
+                    </li>
+                                        <li class="nav-item">
+                        <a class="nav-link" href="#sucursales">Sucursales</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contacto">Contacto</a>
+                    </li>
+                </ul>
+
+                <!-- Botón que redirige al Login -->
+                            <a href="../Login/login.html" class="btn btn-outline-light rounded-pill px-4">
+                                <i class="bi bi-person-fill me-1"></i> Iniciar Sesión
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+
+    <!-- 2. BANNER PRINCIPAL (HERO SECTION) -->
+    <header id="inicio" class="hero-section text-white py-5">
+        <div class="container py-4">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <span class="badge bg-light text-primary mb-3 px-3 py-2 rounded-pill fw-semibold">
+                        Herramientas y Máquinas Profesionales
+                    </span>
+                    <h1 class="display-4 fw-bold mb-3">Todo lo que necesitas para tus proyectos en un solo lugar</h1>
+                    <p class="lead mb-4 text-light-50">
+                        En Ferretería Tronka ofrecemos la mejor calidad en insumos industriales, construcción y hogar con asesoramiento personalizado.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="#promociones" class="btn btn-light btn-lg text-primary fw-semibold px-4">Ver Ofertas</a>
+                        <a href="../Login/login.html" class="btn btn-outline-light btn-lg px-4">Acceso Sistema</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80" alt="Ferretería Tronka" class="img-fluid rounded-4 shadow-lg">
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- 3. INFORMACIÓN / SOBRE NOSOTROS -->
+    <section id="nosotros" class="py-5 bg-light">
+        <div class="container py-4">
+            
+            <!-- HISTORIA Y TEXTO INSTITUCIONAL -->
+            <div class="row align-items-center g-5 mb-5">
+                <div class="col-lg-6">
+                    <span class="badge bg-primary text-white mb-2 px-3 py-2 rounded-pill">Sobre Nosotros</span>
+                    <h2 class="display-6 fw-bold text-dark mb-3">Más de 20 años construyendo confianza junto a vos</h2>
+                    <p class="text-muted leading-relaxed">
+                        En <strong>Ferretería Tronka</strong> nacimos como un emprendimiento familiar enfocado en brindar soluciones reales a los trabajadores y hacedores de nuestra comunidad. Con el paso de los años y el crecimiento de nuestras sucursales, nos consolidamos como referentes en la provisión de herramientas, maquinarias, insumos de construcción y elementos de seguridad industrial.
+                    </p>
+                    <p class="text-muted leading-relaxed">
+                        Nuestra misión es acompañar a cada cliente en sus proyectos, desde pequeñas reparaciones del hogar hasta grandes obras de ingeniería. Nos destaca la atención personalizada, el asesoramiento técnico especializado y un compromiso inquebrantable con la calidad.
+                    </p>
+                    
+                    <!-- Pequeñas métricas o datos clave -->
+                    <div class="row g-3 mt-2 text-center text-sm-start">
+                        <div class="col-6 col-sm-4">
+                            <h3 class="fw-bold text-primary mb-0">+20</h3>
+                            <span class="text-muted small">Años de experiencia</span>
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <h3 class="fw-bold text-primary mb-0">5</h3>
+                            <span class="text-muted small">Sucursales activas</span>
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <h3 class="fw-bold text-primary mb-0">+1000</h3>
+                            <span class="text-muted small">Productos en stock</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Imagen representativa -->
+                <div class="col-lg-6">
+                    <div class="position-relative">
+                        <img src="https://dojiw2m9tvv09.cloudfront.net/16738/4/inventario-productos-ferreteria-bsale-peru-webp4288.webp?1420&t=1786621486" alt="Ferretería Tronka Mostrador" class="img-fluid rounded-4 shadow">
+                    </div>
+                </div>
+            </div>
+
+            <!-- TÍTULO DE LAS TARJETAS -->
+            <div class="text-center max-w-2xl mx-auto mb-4 pt-3">
+                <h3 class="fw-bold text-dark">¿Por qué elegir Ferretería Tronka?</h3>
+                <p class="text-muted">Nuestros pilares fundamentales de atención y servicio.</p>
+            </div>
+            
+            <!-- TARJETAS DE BENEFICIOS -->
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                        <div class="feature-icon bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="bi bi-shield-check fs-3"></i>
+                        </div>
+                        <h4 class="h5 fw-bold">Garantía de Calidad</h4>
+                        <p class="text-muted mb-0">Trabajamos únicamente con marcas de primer nivel nacional e internacional (Stanley, Bosch, DeWalt, Bahco).</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                        <div class="feature-icon bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="bi bi-truck fs-3"></i>
+                        </div>
+                        <h4 class="h5 fw-bold">Envíos a Obra</h4>
+                        <p class="text-muted mb-0">Repartos diarios y logística propia coordinada para que tu trabajo no se detenga.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                        <div class="feature-icon bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="bi bi-headset fs-3"></i>
+                        </div>
+                        <h4 class="h5 fw-bold">Asesoramiento Técnico</h4>
+                        <p class="text-muted mb-0">Nuestro equipo capacitado te orienta en cada necesidad específica de tu proyecto.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <!-- 4. CARRUSEL CON IMÁGENES / NOVEDADES -->
+    <section id="promociones" class="py-5">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold text-dark">Destacados y Promociones</h2>
+                <p class="text-muted">Conocé los productos en oferta de esta semana</p>
+            </div>
+
+            <div id="carruselPromociones" class="carousel slide shadow-sm rounded-4 overflow-hidden" data-bs-ride="carousel">
+                <!-- Indicadores -->
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carruselPromociones" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#carruselPromociones" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#carruselPromociones" data-bs-slide-to="2"></button>
+                </div>
+
+                <!-- Diapositivas -->
+                <div class="carousel-inner">
+                    <div class="carousel-item active" data-bs-interval="4000">
+                        <img src="https://acdn-us.mitiendanube.com/stores/001/865/189/products/shg6070ka1-9aebe02362a56c9a8416394999589221-1024-1024.webp" class="d-block w-100" alt="Herramientas Eléctricas">
+                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-3">
+                            <h3 class="fw-bold text-white">Herramientas Eléctricas</h3>
+                            <p>Financiación en hasta 12 cuotas fijas para consumidores finales en herramientas seleccionadas.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item" data-bs-interval="4000">
+                        <img src="https://sc04.alicdn.com/kf/H61b731062af748cfbaceaceb3837fa3dG.jpg" class="d-block w-100" alt="Pinturas y Acabados">
+                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-3">
+                            <h3 class="fw-bold text-white">Línea de Pinturas de Exterior</h3>
+                            <p>Descuentos especiales por volumen en látex impermeable.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item" data-bs-interval="4000">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbdOweOWIWMH9qEYyM-oSdhSvSukab0Iwe20Mxuo1l2A&s=10" class="d-block w-100" alt="Equipamiento de Seguridad">
+                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-3">
+                            <h3 class="fw-bold text-white">Indumentaria y Protección</h3>
+                            <p>Todo el calzado de seguridad e indumentaria con homologación oficial.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Controles -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#carruselPromociones" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carruselPromociones" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+        </div>
+    </section>
+    <!-- SECCIÓN SUCURSALES -->
+<section id="sucursales" class="py-5 bg-light">
+    <div class="container py-4">
+        
+        <div class="text-center mb-5">
+            <span class="badge bg-primary text-white mb-2 px-3 py-2 rounded-pill">Encontranos Cerca</span>
+            <h2 class="fw-bold text-dark">Nuestras Sucursales</h2>
+            <p class="text-muted">Visitanos en cualquiera de nuestras sedes oficiales</p>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- 1. Nueva Córdoba -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm p-3">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 text-primary mb-2">
+                                <i class="bi bi-geo-alt-fill fs-4"></i>
+                                <h5 class="fw-bold mb-0">Sucursal Nueva Córdoba</h5>
+                            </div>
+                            <p class="text-muted small mb-1">
+                                <strong>Dirección:</strong> Av. Hipólito Yrigoyen 250
+                            </p>
+                            <p class="text-muted small mb-3">
+                                <strong>Ubicación:</strong> Nueva Córdoba, Córdoba Capital
+                            </p>
+                        </div>
+                        <a href="https://maps.google.com/?q=Av.+Hipolito+Yrigoyen+250,+Cordoba" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill w-100">
+                            <i class="bi bi-map-fill me-1"></i> Abrir en Maps
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. General Paz -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm p-3">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 text-primary mb-2">
+                                <i class="bi bi-geo-alt-fill fs-4"></i>
+                                <h5 class="fw-bold mb-0">Sucursal General Paz</h5>
+                            </div>
+                            <p class="text-muted small mb-1">
+                                <strong>Dirección:</strong> Av. 24 de Septiembre 1200
+                            </p>
+                            <p class="text-muted small mb-3">
+                                <strong>Ubicación:</strong> General Paz, Córdoba Capital
+                            </p>
+                        </div>
+                        <a href="https://maps.google.com/?q=Av.+24+de+Septiembre+1200,+Cordoba" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill w-100">
+                            <i class="bi bi-map-fill me-1"></i> Abrir en Maps
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Alberdi -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm p-3">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 text-primary mb-2">
+                                <i class="bi bi-geo-alt-fill fs-4"></i>
+                                <h5 class="fw-bold mb-0">Sucursal Alberdi</h5>
+                            </div>
+                            <p class="text-muted small mb-1">
+                                <strong>Dirección:</strong> Av. Colón 1500
+                            </p>
+                            <p class="text-muted small mb-3">
+                                <strong>Ubicación:</strong> Alberdi, Córdoba Capital
+                            </p>
+                        </div>
+                        <a href="https://maps.google.com/?q=Av.+Colon+1500,+Cordoba" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill w-100">
+                            <i class="bi bi-map-fill me-1"></i> Abrir en Maps
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Villa Carlos Paz -->
+            <div class="col-md-6 col-lg-6">
+                <div class="card h-100 border-0 shadow-sm p-3">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 text-primary mb-2">
+                                <i class="bi bi-geo-alt-fill fs-4"></i>
+                                <h5 class="fw-bold mb-0">Sucursal Carlos Paz</h5>
+                            </div>
+                            <p class="text-muted small mb-1">
+                                <strong>Dirección:</strong> Av. San Martín 500
+                            </p>
+                            <p class="text-muted small mb-3">
+                                <strong>Ubicación:</strong> Centro, Villa Carlos Paz
+                            </p>
+                        </div>
+                        <a href="https://maps.google.com/?q=Av.+San+Martin+500,+Villa+Carlos+Paz" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill w-100">
+                            <i class="bi bi-map-fill me-1"></i> Abrir en Maps
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Río Cuarto -->
+            <div class="col-md-6 col-lg-6">
+                <div class="card h-100 border-0 shadow-sm p-3">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 text-primary mb-2">
+                                <i class="bi bi-geo-alt-fill fs-4"></i>
+                                <h5 class="fw-bold mb-0">Sucursal Río Cuarto</h5>
+                            </div>
+                            <p class="text-muted small mb-1">
+                                <strong>Dirección:</strong> Sobremonte 750
+                            </p>
+                            <p class="text-muted small mb-3">
+                                <strong>Ubicación:</strong> Centro, Río Cuarto
+                            </p>
+                        </div>
+                        <a href="https://maps.google.com/?q=Sobremonte+750,+Rio+Cuarto" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill w-100">
+                            <i class="bi bi-map-fill me-1"></i> Abrir en Maps
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+    <!-- 5. PIE DE PÁGINA / FOOTER -->
+    <footer id="contacto" class="bg-dark text-light pt-5 pb-4 border-top border-secondary">
+        <div class="container">
+            <div class="row g-4">
+
+                <!-- COLUMNA 1: SOBRE LA FERRETERÍA Y REDES SOCIALES -->
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="fw-bold text-primary mb-3">
+                        <i class="bi bi-tools me-2"></i>Ferretería Tronka
+                    </h5>
+                    <p class="text-secondary small mb-3">
+                        Más de 20 años ofreciendo soluciones integrales en máquinas, herramientas e insumos para la industria, la construcción y el hogar.
+                    </p>
+                    
+                    <!-- REDES SOCIALES -->
+                    <h6 class="fw-semibold text-white small mb-2">Seguinos en nuestras redes:</h6>
+                    <div class="d-flex gap-2">
+                        <a href="https://facebook.com" target="_blank" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://instagram.com" target="_blank" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://wa.me/543514567890" target="_blank" class="btn btn-outline-success btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- COLUMNA 2: RESUMEN DE SUCURSALES -->
+                <div class="col-lg-4 col-md-6">
+                    <h6 class="fw-bold text-white mb-3">
+                        <i class="bi bi-geo-alt-fill text-primary me-2"></i>Nuestras Sucursales
+                    </h6>
+                    <ul class="list-unstyled text-secondary small space-y-2">
+                        <li class="mb-2">
+                            <strong class="text-white">Nueva Córdoba:</strong> Av. Hipólito Yrigoyen 250
+                        </li>
+                        <li class="mb-2">
+                            <strong class="text-white">General Paz:</strong> Av. 24 de Septiembre 1200
+                        </li>
+                        <li class="mb-2">
+                            <strong class="text-white">Alberdi:</strong> Av. Colón 1500
+                        </li>
+                        <li class="mb-2">
+                            <strong class="text-white">Carlos Paz:</strong> Av. San Martín 500
+                        </li>
+                        <li class="mb-2">
+                            <strong class="text-white">Río Cuarto:</strong> Sobremonte 750
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- COLUMNA 3: CONTACTO Y HORARIOS -->
+                <div class="col-lg-4 col-md-12">
+                    <h6 class="fw-bold text-white mb-3">
+                        <i class="bi bi-envelope-paper-fill text-primary me-2"></i>Contacto Directo
+                    </h6>
+                    <ul class="list-unstyled text-secondary small">
+                        <li class="mb-2">
+                            <i class="bi bi-telephone-fill text-primary me-2"></i>
+                            <strong>Teléfono Ventas:</strong> +54 (351) 456-7890
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-whatsapp text-success me-2"></i>
+                            <strong>WhatsApp Consultas:</strong> +54 9 351 678-9012
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-envelope-fill text-primary me-2"></i>
+                            <strong>Email:</strong> ventas@tronka.com.ar
+                        </li>
+                        <li class="mt-3">
+                            <i class="bi bi-clock-fill text-warning me-2"></i>
+                            <strong>Horarios de Atención:</strong><br>
+                            <span class="ms-4">Lun a Vie: 08:00 a 19:00 hs</span><br>
+                            <span class="ms-4">Sábados: 08:30 a 13:00 hs</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <hr class="my-4 border-secondary">
+
+            <!-- DERECHOS DE AUTOR -->
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start text-secondary small">
+                    © 2026 Ferretería Tronka S.A. - Todos los derechos reservados.
+                </div>
+                <div class="col-md-6 text-center text-md-end text-secondary small mt-2 mt-md-0">
+                    Trabajo Práctico Integrador · TUP UTN FRC
+                </div>
+            </div>
+        </div>
+    </footer> 
+    <!-- Bootstrap 5 JavaScript Bundle (incluye Popper para que funcione el carrusel y navbar) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>           
+<script src="../js/Inicio.js"></script>
+</body>
+
+</html>

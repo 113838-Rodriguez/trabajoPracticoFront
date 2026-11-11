@@ -1,0 +1,396 @@
+
+/* ==========================================
+   FERRETERÍA TRONKA - CREAR USUARIO
+   ========================================== */
+
+:root {
+    --primary-dark: #202b3d;
+    --primary-blue: #2563eb;
+    --primary-blue-hover: #1d4ed8;
+    --background: #f3f5f9;
+    --white: #ffffff;
+    --text: #344054;
+    --text-muted: #64748b;
+    --border: #d6dce5;
+}
+
+/* ==========================================
+   ESTILOS GENERALES
+   ========================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text);
+
+    background:
+        radial-gradient(
+            ellipse at 10% 15%,
+            rgba(37, 99, 235, 0.16),
+            transparent 42%
+        ),
+        radial-gradient(
+            ellipse at 90% 85%,
+            rgba(32, 43, 61, 0.14),
+            transparent 45%
+        ),
+        linear-gradient(
+            135deg,
+            #f8fafc 0%,
+            #e9eef7 50%,
+            #f1f5f9 100%
+        );
+
+    background-attachment: fixed;
+}
+
+/* Cuadrícula decorativa del fondo */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background-image:
+        linear-gradient(
+            rgba(32, 43, 61, 0.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(32, 43, 61, 0.035) 1px,
+            transparent 1px
+        );
+
+    background-size: 42px 42px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ==========================================
+   CONTENEDOR PRINCIPAL
+   ========================================== */
+
+.page-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px 50px;
+}
+
+/* ==========================================
+   NAVEGACIÓN
+   ========================================== */
+
+nav {
+    font-size: 0.9rem;
+}
+
+nav a {
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+}
+
+nav a:hover {
+    color: var(--primary-blue) !important;
+}
+
+/* ==========================================
+   ENCABEZADO
+   ========================================== */
+
+.card-header {
+    background: var(--primary-dark) !important;
+    color: var(--white);
+    padding: 30px 36px;
+    border: none;
+    border-radius: 14px !important;
+
+    box-shadow:
+        0 6px 20px rgba(32, 43, 61, 0.12);
+}
+
+.card-header h2 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    margin-bottom: 8px;
+}
+
+.card-header p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* ==========================================
+   TARJETA PRINCIPAL
+   ========================================== */
+
+.card {
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    overflow: hidden;
+
+    box-shadow:
+        0 12px 35px rgba(32, 43, 61, 0.09),
+        0 3px 10px rgba(32, 43, 61, 0.04) !important;
+}
+
+.card-body {
+    padding: 38px 42px;
+}
+
+/* ==========================================
+   SECCIONES DEL FORMULARIO
+   ========================================== */
+
+.form-section {
+    margin-bottom: 28px;
+}
+
+.section-title {
+    color: var(--primary-dark);
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.section-description {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.section-divider {
+    height: 1px;
+    background: #e2e8f0;
+    border: none;
+    margin: 32px 0;
+}
+
+/* ==========================================
+   LABELS
+   ========================================== */
+
+.form-label {
+    color: var(--text);
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin-bottom: 9px;
+}
+
+.required-mark {
+    color: #dc3545;
+    margin-left: 2px;
+}
+
+/* ==========================================
+   INPUTS Y SELECTS
+   ========================================== */
+
+.form-control,
+.form-select {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
+    background: #ffffff;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    font-size: 0.95rem;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.form-control::placeholder {
+    color: #98a2b3;
+}
+
+.form-control:hover,
+.form-select:hover {
+    border-color: #a7b4c7;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background: #ffffff;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+    outline: none;
+}
+
+.form-select {
+    cursor: pointer;
+}
+
+/* Textos de ayuda */
+
+.form-text {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    margin-top: 8px;
+    line-height: 1.5;
+}
+
+/* ==========================================
+   MENSAJES
+   ========================================== */
+
+#mensaje:empty {
+    display: none;
+}
+
+#mensaje:not(:empty) {
+    margin-bottom: 20px;
+}
+
+.alert {
+    border: none;
+    border-radius: 9px;
+    padding: 14px 18px;
+    font-size: 0.92rem;
+}
+
+/* ==========================================
+   BOTONES
+   ========================================== */
+
+.form-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 14px;
+    padding-top: 26px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn {
+    min-height: 44px;
+    padding: 11px 26px;
+    border-radius: 9px;
+    font-size: 0.92rem;
+    font-weight: 600;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+/* Botón Crear usuario */
+
+.btn-primary {
+    background: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: white;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background: var(--primary-blue-hover);
+    border-color: var(--primary-blue-hover);
+    color: white;
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 14px rgba(37, 99, 235, 0.2);
+}
+
+.btn-primary:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Botón Cancelar */
+
+.btn-secondary {
+    background: #64748b;
+    border-color: #64748b;
+    color: white;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+    background: #475569;
+    border-color: #475569;
+    color: white;
+}
+
+/* ==========================================
+   RESPONSIVE - TABLETS
+   ========================================== */
+
+@media (max-width: 768px) {
+
+    .page-wrapper {
+        margin: 24px auto;
+        padding: 0 16px 32px;
+    }
+
+    .card-header {
+        padding: 25px 24px;
+    }
+
+    .card-header h2 {
+        font-size: 1.4rem;
+    }
+
+    .card-body {
+        padding: 28px 22px;
+    }
+
+    .section-divider {
+        margin: 26px 0;
+    }
+}
+
+/* ==========================================
+   RESPONSIVE - CELULARES
+   ========================================== */
+
+@media (max-width: 576px) {
+
+    .page-wrapper {
+        margin-top: 18px;
+        padding: 0 12px 24px;
+    }
+
+    .card-header {
+        padding: 22px 20px;
+    }
+
+    .card-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .card-body {
+        padding: 24px 18px;
+    }
+
+    .section-title {
+        font-size: 1rem;
+    }
+
+    .form-footer {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .form-footer .btn {
+        width: 100%;
+    }
+}
