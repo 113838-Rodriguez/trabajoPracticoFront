@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - Ferretería Tronka</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/clientes.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="bi bi-tools"></i>
+                <h4>Ferretería Tronka</h4>
+            </div>
+            <nav class="nav flex-column">
+                <a href="../Principal/index.html" class="nav-link"><i class="bi bi-house-door"></i>Inicio</a>
+                <a href="#" class="nav-link"><i class="bi bi-cart3"></i>Ventas</a>
+                <a href="#" class="nav-link"><i class="bi bi-box-seam"></i>Productos</a>
+                <a href="#" class="nav-link"><i class="bi bi-boxes"></i>Stock</a>
+                <a href="Clientes.html" class="nav-link active"><i class="bi bi-people"></i>Clientes</a>
+                <a href="#" class="nav-link"><i class="bi bi-truck"></i>Proveedores</a>
+                <a href="../Configuracion/Configuracion.html" class="nav-link"> <i class="bi bi-gear"></i>Configuracion</a>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <div>
+                    <h5 class="mb-0">Gestión de clientes</h5>
+                    <small class="text-muted">Administración de clientes registrados</small>
+                </div>
+                <a href="../index/index.html" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Volver al inicio
+                </a>
+            </header>
+
+            <main class="content">
+                <div class="page-heading">
+                    <div>
+                        <h3>Clientes</h3>
+                        <p class="text-muted mb-0">Registrá, consultá y modificá tus clientes.</p>
+                    </div>
+                    <button class="btn btn-primary" id="btnNuevo">
+                        <i class="bi bi-plus-lg"></i> Nuevo cliente
+                    </button>
+                </div>
+
+                <div id="mensaje" class="alert d-none" role="alert"></div>
+
+                <section class="panel mb-4" id="panelFormulario">
+                    <div class="panel-heading">
+                        <h5 id="tituloFormulario">Registrar cliente</h5>
+                        <button type="button" class="btn-close" id="btnCerrarFormulario" aria-label="Cerrar"></button>
+                    </div>
+                    <form id="formCliente">
+                        <input type="hidden" id="clienteId">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="nombre" class="form-label">Nombre *</label>
+                                <input class="form-control" id="nombre" maxlength="100" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="apellido" class="form-label">Apellido</label>
+                                <input class="form-control" id="apellido" maxlength="100">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="razonSocial" class="form-label">Razón social</label>
+                                <input class="form-control" id="razonSocial" maxlength="150">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="dni" class="form-label">DNI</label>
+                                <input class="form-control" id="dni" maxlength="10" inputmode="numeric">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="cuil" class="form-label">CUIL</label>
+                                <input class="form-control" id="cuil" maxlength="13" placeholder="20-12345678-9">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="tipoClienteId" class="form-label">Tipo de cliente (ID) *</label>
+                                <input class="form-control" id="tipoClienteId" type="number" min="1" step="1" required>
+                                <div class="form-text">Ingresá un ID existente en TipoCliente.</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="domicilioId" class="form-label">Domicilio (ID)</label>
+                                <input class="form-control" id="domicilioId" type="number" min="1" step="1">
+                                <div class="form-text">Opcional. Debe existir en Domicilios.</div>
+                            </div>
+                            <div class="col-12" id="estadoContainer">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="activo" checked>
+                                    <label class="form-check-label" for="activo">Cliente activo</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline-secondary" id="btnCancelar">Cancelar</button>
+                            <button type="submit" class="btn btn-primary" id="btnGuardar">
+                                <i class="bi bi-check-lg"></i> Guardar cliente
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="panel">
+                    <div class="list-toolbar">
+                        <div>
+                            <h5 class="mb-1">Listado de clientes</h5>
+                            <small class="text-muted" id="cantidadClientes">Cargando clientes...</small>
+                        </div>
+                        <div class="search-box">
+                            <i class="bi bi-search"></i>
+                            <input type="search" id="buscarCliente" class="form-control" placeholder="Buscar por nombre, DNI o CUIL">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre y apellido</th>
+                                    <th>Razón social</th>
+                                    <th>DNI</th>
+                                    <th>CUIL</th>
+                                    <th>Tipo</th>
+                                    <th>Fecha de alta</th>
+                                    <th class="text-end">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaClientes">
+                                <tr><td colspan="8" class="text-center text-muted py-4">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="../js/clientes.js"></script>
+</body>
+</html>
