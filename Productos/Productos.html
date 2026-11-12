@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Productos - Ferretería Tronka</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/productos.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- MENU LATERAL -->
+        <aside class="sidebar">
+
+            <div class="sidebar-header">
+                <i class="bi bi-tools"></i>
+                <h4>Ferretería Tronka</h4>
+            </div>
+
+            <nav class="nav flex-column">
+
+                <a href="../Principal/index.html" class="nav-link">
+                    <i class="bi bi-house-door"></i>
+                    Inicio
+                </a>
+
+                <a href="#" class="nav-link">
+                    <i class="bi bi-cart3"></i>
+                    Ventas
+                </a>
+
+                <a href="Productos.html" class="nav-link active">
+                    <i class="bi bi-box-seam"></i>
+                    Productos
+                </a>
+
+                <a href="#" class="nav-link">
+                    <i class="bi bi-boxes"></i>
+                    Stock
+                </a>
+
+                <a href="#" class="nav-link">
+                    <i class="bi bi-people"></i>
+                    Clientes
+                </a>
+
+                <a href="#" class="nav-link">
+                    <i class="bi bi-truck"></i>
+                    Proveedores
+                </a>
+
+                <a href="../Reportes/Reportes.html"
+                   class="nav-link admin-only">
+                    <i class="bi bi-bar-chart"></i>
+                    Reportes
+                </a>
+
+                <a href="../Configuracion/Configuracion.html"
+                   class="nav-link admin-only">
+                    <i class="bi bi-gear"></i>
+                    Configuración
+                </a>
+
+            </nav>
+        </aside>
+
+        <!-- MAIN -->
+        <div class="main-area">
+
+            <header class="topbar">
+                <h5 class="mb-0">Gestión de productos</h5>
+
+                <a href="../Principal/index.html"
+                   class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left"></i>
+                    Volver al panel
+                </a>
+            </header>
+
+            <main class="content">
+
+                <div class="mb-4">
+                    <h3>Productos</h3>
+                    <p class="text-muted">
+                        Consulta y administración del catálogo de productos.
+                    </p>
+                </div>
+
+                <!-- MENSAJES -->
+                <div id="mensajeError"
+                     class="alert alert-danger d-none"
+                     role="alert">
+                </div>
+                <div id="mensajeExito"
+                    class="alert alert-success d-none"
+                    role="status">
+                </div>
+
+
+                <div class="d-flex justify-content-end mb-3">
+
+                    <button
+                        type="button"
+                        class="btn btn-success"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalNuevoProducto">
+
+                        <i class="bi bi-plus-circle"></i>
+                        Nuevo producto
+
+                    </button>
+
+                </div>
+
+                <!-- TABLA -->
+                <div class="card productos-card shadow-sm">
+
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Listado de productos</h5>
+                    </div>
+
+                    <div class="card-body">
+
+                        <!-- BUSQUEDA Y FILTROS -->
+                        <form id="formBuscarProducto" class="row g-2 mb-4">
+
+                            <div class="col-md-5">
+                                <input
+                                    type="text"
+                                    id="codigoBusqueda"
+                                    class="form-control"
+                                    placeholder="Ingrese el código del producto">
+                            </div>
+
+                            <div class="col-md-3">
+                                <select id="filtroEstado" class="form-select">
+                                    <option value="false">Productos activos</option>
+                                    <option value="true">Productos inactivos</option>
+                                </select>
+                            </div>
+
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search"></i>
+                                    Buscar
+                                </button>
+                            </div>
+
+                            <div class="col-auto">
+                                <button
+                                    type="button"
+                                    id="btnMostrarTodos"
+                                    class="btn btn-outline-secondary">
+                                    Limpiar búsqueda
+                                </button>
+                            </div>
+
+                        </form>
+
+                        <div class="table-responsive">
+
+                            <table class="table table-hover align-middle">
+
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Descripción</th>
+                                        <th>Marca</th>
+                                        <th>Categoría</th>
+                                        <th>Tipo</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="tablaProductos">
+                                    <tr>
+                                        <td colspan="6"
+                                            class="text-center text-muted">
+                                            Cargando productos...
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                        <p id="totalProductos"
+                           class="text-muted small mb-0">
+                        </p>
+
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+
+    <!-- MODAL ALTA DE PRODUCTOS -->
+    <div class="modal fade"
+        id="modalNuevoProducto"
+        tabindex="-1"
+        aria-labelledby="tituloNuevoProducto"
+        aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title" id="tituloNuevoProducto">
+                        Nuevo producto
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Cerrar">
+                    </button>
+
+                </div>
+
+                <form id="formNuevoProducto">
+
+                    <div class="modal-body">
+
+                        <div id="errorAltaProducto"
+                            class="alert alert-danger d-none"
+                            role="alert">
+                        </div>
+
+                        <!-- CODIGO -->
+                        <div class="mb-3">
+                            <label for="nuevoCodigo"
+                                class="form-label">
+                                Código *
+                            </label>
+
+                            <input type="text"
+                                id="nuevoCodigo"
+                                class="form-control"
+                                maxlength="30"
+                                required>
+                        </div>
+
+                        <!-- DESCRIPCION -->
+                        <div class="mb-3">
+                            <label for="nuevaDescripcion"
+                                class="form-label">
+                                Descripción *
+                            </label>
+
+                            <input type="text"
+                                id="nuevaDescripcion"
+                                class="form-control"
+                                maxlength="150"
+                                required>
+                        </div>
+
+                        <!-- MARCA -->
+                        <div class="mb-3">
+                            <label for="nuevaMarca"
+                                class="form-label">
+                                Marca
+                            </label>
+
+                            <input type="text"
+                                id="nuevaMarca"
+                                class="form-control"
+                                maxlength="100">
+                        </div>
+
+                        <!-- CATEGORIA -->
+                        <div class="mb-3">
+                            <label for="nuevaCategoria"
+                                class="form-label">
+                                Categoría *
+                            </label>
+
+                            <select id="nuevaCategoria"
+                                    class="form-select"
+                                    required>
+                                <option value="">
+                                    Cargando categorías...
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- TIPO -->
+                        <div class="mb-3">
+                            <label for="nuevoTipo"
+                                class="form-label">
+                                Tipo *
+                            </label>
+
+                            <select id="nuevoTipo"
+                                    class="form-select"
+                                    required>
+                                <option value="">
+                                    Cargando tipos...
+                                </option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+
+                        <button type="submit"
+                                id="btnGuardarNuevoProducto"
+                                class="btn btn-success"
+                                disabled>
+
+                            Guardar producto
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="../js/productos.js"></script>
+
+</body>
+</html>
