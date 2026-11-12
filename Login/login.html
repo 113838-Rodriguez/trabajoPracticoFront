@@ -60,7 +60,27 @@
                         
 
                     </form>
+                        <!-- INICIO DE SESIÓN NFC -->
+                    <div class="text-center mt-4">
 
+                        <p class="text-muted mb-3">
+                            O ingresá con tu credencial NFC
+                        </p>
+
+                        <button
+                            type="button"
+                            id="btnLoginNFC"
+                            class="btn btn-outline-primary w-100 fw-semibold">
+
+                            📱 Iniciar sesión con NFC
+                        </button>
+
+                        <div id="estadoNFC"
+                            class="alert alert-info mt-3 d-none"
+                            role="status">
+                        </div>
+
+                    </div>
                     <div class="text-center mt-3">
                         <a href="../Inicio/inicio.html" class="btn btn-outline-secondary w-100 mt-2 fw-semibold">
                             Volver a Inicio
@@ -74,6 +94,7 @@
     </main>
 
     <script src="../js/login.js"></script>
+    <script src="../js/nfc.js"></script>
 </body>
 
 </html>
