@@ -1,5 +1,5 @@
 
-const API_URL = "http://localhost:5000/api/Producto";
+const API_URL = "https://localhost:7236/api/Producto";
 
 let codigoOriginalEdicion = null;
 
