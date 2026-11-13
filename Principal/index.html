@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -15,6 +14,9 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
           rel="stylesheet">
+
+    <!-- Chart.js (el mismo que usa Reportes) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 
     <!-- CSS personalizado -->
     <link rel="stylesheet" href="../css/index.css">
@@ -33,17 +35,16 @@
             </div>
 
             <nav class="nav flex-column">
-                
-               <a href="../Principal/index.html" class="nav-link active"><i class="bi bi-house-door"></i>Inicio</a>
-                
+
+                <a href="../Principal/index.html" class="nav-link active"><i class="bi bi-house-door"></i>Inicio</a>
+
                 <a href="../Productos/Productos.html" class="nav-link"><i class="bi bi-box-seam"></i>Productos</a>
-                
-                <a href="Clientes.html" class="nav-link "><i class="bi bi-people"></i>Clientes</a>
 
+                <a href="../Clientes/Clientes.html" class="nav-link"><i class="bi bi-people"></i>Clientes</a>
 
-                 <a href="../Reportes/Reportes.html" class="nav-link "><i class="bi bi-people"></i>Reportes</a>
-                
-                <a href="../Configuracion/Configuracion.html" class="nav-link"> <i class="bi bi-gear"></i>Configuracion</a>
+                <a href="../Reportes/Reportes.html" class="nav-link"><i class="bi bi-bar-chart-line"></i>Reportes</a>
+
+                <a href="../Configuracion/Configuracion.html" class="nav-link"><i class="bi bi-gear"></i>Configuracion</a>
 
             </nav>
 
@@ -63,6 +64,14 @@
 
                     <span id="usuarioActual"></span>
 
+                    <!-- Vuelve a la página de bienvenida (antes del login) -->
+                    <a href="../Inicio/inicio.html"
+                       class="btn btn-outline-primary btn-sm"
+                       id="btnVolverInicio">
+                        <i class="bi bi-house-door"></i>
+                        Volver al inicio
+                    </a>
+
                     <button id="btnLogout"
                             class="btn btn-outline-danger btn-sm">
                         <i class="bi bi-box-arrow-right"></i>
@@ -76,13 +85,22 @@
             <!-- CONTENIDO -->
             <main class="content">
 
-                <h3>Bienvenido a Ferretería Tronka</h3>
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+                    <div>
+                        <h3>Bienvenido a Ferretería Tronka</h3>
+                        <p class="text-muted mb-0">Sistema de gestión de ferretería</p>
+                    </div>
 
-                <p class="text-muted">
-                    Sistema de gestión de ferretería
-                </p>
+                    <button id="btnActualizar" class="btn btn-primary btn-sm">
+                        <i class="bi bi-arrow-clockwise"></i>
+                        Actualizar datos
+                    </button>
+                </div>
 
-                <div class="row g-4 mt-3">
+                <div id="dashboardAlert" class="alert alert-warning d-none mt-3 mb-0"></div>
+
+                <!-- TARJETAS -->
+                <div class="row g-4 mt-1">
 
                     <!-- VENTAS -->
                     <div class="col-12 col-sm-6 col-xl-3 admin-only">
@@ -90,8 +108,9 @@
                             <div class="stat-icon">
                                 <i class="bi bi-currency-dollar"></i>
                             </div>
-                            <p>Ventas del día</p>
-                            <h3>—</h3>
+                            <p>Ventas del mes</p>
+                            <h3 id="statVentas">—</h3>
+                            <small class="stat-sub" id="statVentasSub">&nbsp;</small>
                         </div>
                     </div>
 
@@ -102,29 +121,119 @@
                                 <i class="bi bi-box-seam"></i>
                             </div>
                             <p>Productos</p>
-                            <h3>—</h3>
+                            <h3 id="statProductos">—</h3>
+                            <small class="stat-sub">Activos en catálogo</small>
                         </div>
                     </div>
 
                     <!-- STOCK -->
                     <div class="col-12 col-sm-6 col-xl-3">
                         <div class="stat-card">
-                            <div class="stat-icon">
+                            <div class="stat-icon stat-icon-warning">
                                 <i class="bi bi-exclamation-triangle"></i>
                             </div>
                             <p>Stock bajo</p>
-                            <h3>—</h3>
+                            <h3 id="statStockBajo">—</h3>
+                            <small class="stat-sub">Productos bajo el mínimo</small>
                         </div>
                     </div>
 
                     <!-- CLIENTES -->
                     <div class="col-12 col-sm-6 col-xl-3">
                         <div class="stat-card">
-                            <div  class="stat-icon">
+                            <div class="stat-icon">
                                 <i class="bi bi-people"></i>
                             </div>
                             <p>Clientes</p>
-                            <h3>—</h3>
+                            <h3 id="statClientes">—</h3>
+                            <small class="stat-sub">Clientes activos</small>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- GRÁFICOS (solo Admin, porque muestran montos) -->
+                <div class="row g-4 mt-1">
+
+                    <div class="col-12 col-xl-8 admin-only">
+                        <div class="panel-card">
+                            <div class="panel-title">
+                                <i class="bi bi-graph-up-arrow"></i>
+                                Ventas por mes
+                                <span class="text-muted fw-normal" id="anioVentas"></span>
+                            </div>
+                            <div class="chart-box">
+                                <canvas id="chartVentas"></canvas>
+                            </div>
+                            <p class="empty-msg d-none" id="msgVentas"></p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-xl-4 admin-only">
+                        <div class="panel-card">
+                            <div class="panel-title">
+                                <i class="bi bi-pie-chart"></i>
+                                Facturación por tipo de cliente
+                            </div>
+                            <div class="chart-box">
+                                <canvas id="chartTipoCliente"></canvas>
+                            </div>
+                            <p class="empty-msg d-none" id="msgTipoCliente"></p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- TABLAS -->
+                <div class="row g-4 mt-1">
+
+                    <div class="col-12 col-xl-6">
+                        <div class="panel-card">
+                            <div class="panel-title">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                Productos con stock bajo
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Sucursal</th>
+                                            <th class="text-end">Actual</th>
+                                            <th class="text-end">Mínimo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablaStockBajo">
+                                        <tr><td colspan="4" class="text-center text-muted py-3">Cargando...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <a href="../Reportes/Reportes.html" class="panel-link">Ver reporte completo →</a>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-xl-6">
+                        <div class="panel-card">
+                            <div class="panel-title">
+                                <i class="bi bi-truck"></i>
+                                Entregas atrasadas
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Tipo</th>
+                                            <th>N° orden</th>
+                                            <th>Cliente / Proveedor</th>
+                                            <th class="text-end">Atraso</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablaEntregas">
+                                        <tr><td colspan="4" class="text-center text-muted py-3">Cargando...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <a href="../Reportes/Reportes.html" class="panel-link">Ver reporte completo →</a>
                         </div>
                     </div>
 
