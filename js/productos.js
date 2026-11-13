@@ -1,5 +1,6 @@
 
-const API_URL = "https://localhost:7236/api/Producto";
+const API_URL = "http://localhost:5000/api/Producto"; // entorno Agus usa [http:] 
+// const API_URL = "https://localhost:7236/api/Producto"; // entorno Fabri usa [https:]
 
 let codigoOriginalEdicion = null;
 
@@ -226,7 +227,7 @@ function mostrarProductos(productos) {
 
             btnBaja.type = "button";
             btnBaja.className = "btn btn-outline-danger btn-sm";
-            btnBaja.textContent = "Dar de baja";
+            btnBaja.textContent = "Borrar";
 
             btnBaja.addEventListener("click", () => {
                 darDeBajaProducto(producto.codigo);
