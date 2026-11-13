@@ -1,0 +1,92 @@
+
+/* ==========================================
+   FERRETERÍA TRONKA - EMPLEADOS
+   ========================================== */
+
+.content h3 {
+    color: #172b4d;
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.empleados-card {
+    background: #ffffff;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.empleados-card .card-header {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 20px 24px;
+}
+
+.empleados-card .card-header h5 {
+    color: #1e3a8a;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.empleados-card .card-body {
+    padding: 24px;
+}
+
+/* TABLA */
+.empleados-card .table {
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+.empleados-card .table thead th {
+    background-color: #f0f3f8;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 15px;
+    white-space: nowrap;
+}
+
+.empleados-card .table tbody td {
+    padding: 14px 15px;
+    font-size: 14px;
+}
+
+.empleados-card .table tbody tr:hover td {
+    background-color: #edf4ff;
+}
+
+/* BOTÓN */
+#btnNuevoEmpleado {
+    background-color: #2563eb;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-weight: 500;
+}
+
+#btnNuevoEmpleado:hover {
+    background-color: #1d4ed8;
+}
+
+/* ERRORES */
+#mensajeError {
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .content h3 {
+        font-size: 23px;
+    }
+
+    .empleados-card .card-body {
+        padding: 12px;
+    }
+
+    .empleados-card .table thead th,
+    .empleados-card .table tbody td {
+        padding: 10px;
+        font-size: 12px;
+    }
+}

@@ -1,253 +1,240 @@
 
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Crear Usuario | Ferretería Tronka</title>
+    <title>Crear usuario - Ferretería Tronka</title>
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
-    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/crearUsuario.css">
 </head>
 
 <body>
+    <div class="app-container">
 
-    <main class="page-wrapper">
-
-        <!-- NAVEGACIÓN -->
-        <nav class="mb-4" aria-label="Navegación">
-            <a href="../Principal/index.html"
-               class="text-decoration-none text-secondary">
-                Configuración
-            </a>
-
-            <span class="text-secondary mx-2">/</span>
-
-            <span class="fw-semibold text-dark">
-                Crear usuario
-            </span>
-        </nav>
-
-        <!-- ENCABEZADO -->
-        <div class="card-header rounded-3 mb-4">
-            <h2 class="mb-2">
-                Crear nuevo usuario
-            </h2>
-
-            <p class="mb-0 text-white-50">
-                Registrá una nueva cuenta para acceder
-                al sistema Ferretería Tronka.
-            </p>
-        </div>
-
-        <!-- TARJETA PRINCIPAL -->
-        <div class="card shadow-sm">
-
-            <div class="card-body">
-
-                <form id="formCrearUsuario">
-
-                    <!-- ======================= -->
-                    <!-- DATOS DE ACCESO -->
-                    <!-- ======================= -->
-
-                    <section class="form-section">
-
-                        <h5 class="section-title">
-                            01. Datos de acceso
-                        </h5>
-
-                        <p class="section-description">
-                            Ingresá las credenciales que utilizará
-                            el usuario para iniciar sesión.
-                        </p>
-
-                        <div class="row g-4">
-
-                            <!-- NOMBRE DE USUARIO -->
-                            <div class="col-12">
-
-                                <label for="nombreUsuario"
-                                       class="form-label">
-                                    Nombre de usuario
-                                    <span class="required-mark">*</span>
-                                </label>
-
-                                <input type="text"
-                                       class="form-control"
-                                       id="nombreUsuario"
-                                       name="nombreUsuario"
-                                       placeholder="Ej: vendedor01"
-                                       maxlength="50"
-                                       autocomplete="username"
-                                       required>
-
-                                <div class="form-text">
-                                    Este nombre se utilizará para ingresar al sistema.
-                                </div>
-
-                            </div>
-
-                            <!-- CONTRASEÑA -->
-                            <div class="col-md-6">
-
-                                <label for="password"
-                                       class="form-label">
-                                    Contraseña
-                                    <span class="required-mark">*</span>
-                                </label>
-
-                                <input type="password"
-                                       class="form-control"
-                                       id="password"
-                                       name="password"
-                                       placeholder="Ingresá una contraseña"
-                                       autocomplete="new-password"
-                                       required>
-
-                            </div>
-
-                            <!-- CONFIRMAR CONTRASEÑA -->
-                            <div class="col-md-6">
-
-                                <label for="confirmarPassword"
-                                       class="form-label">
-                                    Confirmar contraseña
-                                    <span class="required-mark">*</span>
-                                </label>
-
-                                <input type="password"
-                                       class="form-control"
-                                       id="confirmarPassword"
-                                       name="confirmarPassword"
-                                       placeholder="Repetí la contraseña"
-                                       autocomplete="new-password"
-                                       required>
-
-                            </div>
-
-                        </div>
-
-                    </section>
-
-                    <div class="section-divider"></div>
-
-                    <!-- ======================= -->
-                    <!-- PERMISOS Y VINCULACIÓN -->
-                    <!-- ======================= -->
-
-                    <section class="form-section">
-
-                        <h5 class="section-title">
-                            02. Permisos y vinculación
-                        </h5>
-
-                        <p class="section-description">
-                            Definí el nivel de acceso y asociá
-                            la cuenta a un empleado registrado.
-                        </p>
-
-                        <div class="row g-4">
-
-                            <!-- ROL -->
-                            <div class="col-md-6">
-
-                                <label for="rolId"
-                                       class="form-label">
-                                    Rol del sistema
-                                    <span class="required-mark">*</span>
-                                </label>
-
-                                <select class="form-select"
-                                        id="rolId"
-                                        name="rolId"
-                                        required>
-
-                                    <option value="">
-                                        Seleccione un rol
-                                    </option>
-
-                                </select>
-
-                                <div class="form-text">
-                                    Determina los permisos del usuario.
-                                </div>
-
-                            </div>
-
-                            <!-- EMPLEADO -->
-                            <div class="col-md-6">
-
-                                <label for="empleadoId"
-                                       class="form-label">
-                                    Empleado asociado
-                                </label>
-
-                                <select class="form-select"
-                                        id="empleadoId"
-                                        name="empleadoId">
-
-                                    <option value="">
-                                        Sin empleado asociado
-                                    </option>
-
-                                </select>
-
-                                <div class="form-text">
-                                    Podés crear un usuario sin asociarlo
-                                    a un empleado.
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </section>
-
-                    <!-- ======================= -->
-                    <!-- MENSAJES -->
-                    <!-- ======================= -->
-
-                    <div id="mensaje"
-                         role="status"
-                         aria-live="polite">
-                    </div>
-
-                    <!-- ======================= -->
-                    <!-- BOTONES -->
-                    <!-- ======================= -->
-
-                    <div class="form-footer">
-
-                        <a href="index.html"
-                           class="btn btn-secondary">
-                            Cancelar
-                        </a>
-
-                        <button type="submit"
-                                class="btn btn-primary">
-                            Crear usuario
-                        </button>
-
-                    </div>
-
-                </form>
-
+        <!-- MENÚ LATERAL -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="bi bi-tools"></i>
+                <h4>Ferretería Tronka</h4>
             </div>
 
+            <nav class="nav flex-column">
+                <a href="../Principal/index.html" class="nav-link">
+                    <i class="bi bi-house-door"></i> Inicio
+                </a>
+
+                <a href="../Productos/Productos.html" class="nav-link">
+                    <i class="bi bi-box-seam"></i> Productos
+                </a>
+
+                <a href="../Clientes/Clientes.html" class="nav-link">
+                    <i class="bi bi-people"></i> Clientes
+                </a>
+
+                <a href="../Reportes/Reportes.html" class="nav-link">
+                    <i class="bi bi-bar-chart-line"></i> Reportes
+                </a>
+
+                <a href="../Configuracion/Configuracion.html"
+                   class="nav-link active menu-admin"
+                   style="display: none;">
+                    <i class="bi bi-gear"></i> Configuración
+                </a>
+            </nav>
+        </aside>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="main-area">
+
+            <!-- BARRA SUPERIOR -->
+            <header class="topbar">
+                <h5 class="mb-0">Gestión de usuarios</h5>
+
+                <a href="../Usuarios/usuarios.html"
+                   class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left"></i>
+                    Volver a usuarios
+                </a>
+            </header>
+
+            <main class="content">
+
+                <!-- TÍTULO -->
+                <div class="mb-4">
+                    <h3>Crear nuevo usuario</h3>
+                    <p class="text-muted mb-0">
+                        Registrá una nueva cuenta para acceder al sistema Ferretería Tronka.
+                    </p>
+                </div>
+
+                <!-- TARJETA -->
+                <div class="card shadow-sm border-0 rounded-3">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 text-primary">
+                            <i class="bi bi-person-plus me-2"></i>
+                            Datos del usuario
+                        </h5>
+                    </div>
+
+                    <div class="card-body p-4">
+
+                        <form id="formCrearUsuario">
+
+                            <!-- DATOS DE ACCESO -->
+                            <section class="form-section">
+                                <h5 class="section-title">
+                                    <i class="bi bi-person-lock"></i>
+                                    01. Datos de acceso
+                                </h5>
+
+                                <p class="section-description">
+                                    Ingresá las credenciales que utilizará el usuario para iniciar sesión.
+                                </p>
+
+                                <div class="row g-4">
+
+                                    <div class="col-12">
+                                        <label for="nombreUsuario" class="form-label">
+                                            Nombre de usuario
+                                            <span class="required-mark">*</span>
+                                        </label>
+
+                                        <input type="text"
+                                               class="form-control"
+                                               id="nombreUsuario"
+                                               name="nombreUsuario"
+                                               placeholder="Ej: vendedor01"
+                                               maxlength="50"
+                                               autocomplete="username"
+                                               required>
+
+                                        <div class="form-text">
+                                            Este nombre se utilizará para ingresar al sistema.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="password" class="form-label">
+                                            Contraseña
+                                            <span class="required-mark">*</span>
+                                        </label>
+
+                                        <input type="password"
+                                               class="form-control"
+                                               id="password"
+                                               name="password"
+                                               placeholder="Ingresá una contraseña"
+                                               autocomplete="new-password"
+                                               required>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="confirmarPassword" class="form-label">
+                                            Confirmar contraseña
+                                            <span class="required-mark">*</span>
+                                        </label>
+
+                                        <input type="password"
+                                               class="form-control"
+                                               id="confirmarPassword"
+                                               name="confirmarPassword"
+                                               placeholder="Repetí la contraseña"
+                                               autocomplete="new-password"
+                                               required>
+                                    </div>
+
+                                </div>
+                            </section>
+
+                            <div class="section-divider"></div>
+
+                            <!-- PERMISOS Y VINCULACIÓN -->
+                            <section class="form-section">
+                                <h5 class="section-title">
+                                    <i class="bi bi-shield-lock"></i>
+                                    02. Permisos y vinculación
+                                </h5>
+
+                                <p class="section-description">
+                                    Definí el nivel de acceso y asociá la cuenta a un empleado registrado.
+                                </p>
+
+                                <div class="row g-4">
+
+                                    <div class="col-md-6">
+                                        <label for="rolId" class="form-label">
+                                            Rol del sistema
+                                            <span class="required-mark">*</span>
+                                        </label>
+
+                                        <select class="form-select"
+                                                id="rolId"
+                                                name="rolId"
+                                                required>
+                                            <option value="">Seleccione un rol</option>
+                                        </select>
+
+                                        <div class="form-text">
+                                            Determina los permisos del usuario.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="empleadoId" class="form-label">
+                                            Empleado asociado
+                                        </label>
+
+                                        <select class="form-select"
+                                                id="empleadoId"
+                                                name="empleadoId">
+                                            <option value="">Sin empleado asociado</option>
+                                        </select>
+
+                                        <div class="form-text">
+                                            Podés crear un usuario sin asociarlo a un empleado.
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </section>
+
+                            <!-- MENSAJES -->
+                            <div id="mensaje"
+                                 class="mt-4"
+                                 role="status"
+                                 aria-live="polite">
+                            </div>
+
+                            <!-- BOTONES -->
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <a href="../Usuarios/usuarios.html"
+                                   class="btn btn-outline-secondary">
+                                    Cancelar
+                                </a>
+
+                                <button type="submit"
+                                        class="btn btn-primary">
+                                    <i class="bi bi-check-lg"></i>
+                                    Crear usuario
+                                </button>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </main>
         </div>
+    </div>
 
-    </main>
-
-    <!-- JAVASCRIPT -->
+    <script src="../js/permisos.js"></script>
     <script src="../js/crearUsuario.js"></script>
-
 </body>
 </html>

@@ -1,41 +1,183 @@
 
-body {
-    background-color: #f4f6f9;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    color: #343a40;
+/* ==========================================
+   FERRETERÍA TRONKA - CREAR EMPLEADO
+   ========================================== */
+
+:root {
+    --primary-blue: #2563eb;
+    --primary-blue-hover: #1d4ed8;
+    --text: #344054;
+    --text-muted: #64748b;
+    --border: #d6dce5;
 }
 
-h2 {
+/* ENCABEZADO */
+.content h3 {
+    color: #172b4d;
     font-size: 26px;
+    font-weight: 700;
+}
+
+/* TARJETA */
+.content .empleado-card {
+    background: #ffffff;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(32, 43, 61, 0.07);
+}
+
+.content .empleado-card .card-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 20px 24px;
+}
+
+.content .empleado-card .card-header h5 {
+    color: #1e3a8a;
+    font-size: 17px;
     font-weight: 600;
 }
 
-.card {
-    border: none;
-    border-radius: 12px;
-    max-width: 1000px;
+.content .empleado-card .card-body {
+    padding: 32px;
 }
 
-.form-label {
-    font-weight: 500;
+/* SECCIONES */
+.section-title {
+    color: #1e3a8a;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 10px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-description {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.section-divider {
+    height: 1px;
+    background: #e2e8f0;
+    margin: 30px 0;
+}
+
+/* LABELS */
+#formCrearEmpleado .form-label {
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 9px;
+}
+
+.required-mark {
+    color: #dc3545;
+}
+
+/* INPUTS Y SELECTS */
+#formCrearEmpleado .form-control,
+#formCrearEmpleado .form-select {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 14px;
+
+    background: #ffffff;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#formCrearEmpleado .form-control::placeholder {
+    color: #98a2b3;
+}
+
+#formCrearEmpleado .form-control:hover,
+#formCrearEmpleado .form-select:hover {
+    border-color: #a7b4c7;
+}
+
+#formCrearEmpleado .form-control:focus,
+#formCrearEmpleado .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+    outline: none;
+}
+
+/* MENSAJES */
+#mensaje {
+    border-radius: 8px;
     font-size: 14px;
 }
 
-.form-control {
-    border-radius: 8px;
-    padding: 11px;
+/* BOTONES */
+.form-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #e2e8f0;
 }
 
-.form-control:focus {
-    border-color: #86b7fe;
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+#formCrearEmpleado .btn {
+    min-height: 42px;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
 }
 
-.btn {
-    border-radius: 8px;
-    padding: 10px 18px;
+#formCrearEmpleado .btn-primary {
+    background: var(--primary-blue);
+    border-color: var(--primary-blue);
 }
 
-#mensaje {
-    border-radius: 8px;
+#formCrearEmpleado .btn-primary:hover {
+    background: var(--primary-blue-hover);
+    border-color: var(--primary-blue-hover);
+}
+
+#formCrearEmpleado .btn-primary:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .content h3 {
+        font-size: 23px;
+    }
+
+    .content .empleado-card .card-body {
+        padding: 20px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .content .empleado-card .card-body {
+        padding: 16px !important;
+    }
+
+    .form-footer {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .form-footer .btn {
+        width: 100%;
+    }
 }

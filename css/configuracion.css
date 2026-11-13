@@ -1,69 +1,116 @@
-body {
-    background-color: #f4f6f9;
-    font-family: 'Segoe UI', Arial, sans-serif;
+
+/* ==========================================
+   FERRETERÍA TRONKA - CONFIGURACIÓN
+   ========================================== */
+
+/* TÍTULO */
+.content h3 {
+    color: #172b4d;
+    font-size: 26px;
+    font-weight: 700;
 }
 
-h2 {
-    font-weight: 600;
-    color: #212529;
-}
-
+/* TARJETAS */
 .modulo-card {
+    background: #ffffff;
     border: none;
     border-radius: 12px;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer;
+
+    min-height: 245px;
+
+    box-shadow: 0 4px 16px rgba(32, 43, 61, 0.07);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .modulo-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+
+    box-shadow: 0 10px 25px rgba(32, 43, 61, 0.12);
 }
 
 .modulo-card .card-body {
-    padding: 25px;
+    padding: 26px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
+/* ICONOS */
+.modulo-icono {
+    width: 54px;
+    height: 54px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    margin-bottom: 20px;
+
+    font-size: 24px;
+}
+
+.modulo-icono.azul {
+    background-color: #e7f0ff;
+    color: #2563eb;
+}
+
+.modulo-icono.verde {
+    background-color: #e5f6ed;
+    color: #16a34a;
+}
+
+/* TEXTOS */
 .modulo-card h5 {
-    color: #212529;
+    color: #172b4d;
+    font-size: 18px;
     font-weight: 600;
     margin-bottom: 10px;
 }
 
 .modulo-card p {
-    color: #6c757d;
+    color: #64748b;
     font-size: 14px;
-    margin-bottom: 0;
+    line-height: 1.6;
+    margin-bottom: 20px;
 }
 
-.modulo-icono {
-    width: 55px;
-    height: 55px;
-    border-radius: 12px;
+/* ENLACE INFERIOR */
+.modulo-enlace {
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-    font-size: 26px;
+    gap: 10px;
+
+    margin-top: auto;
+
+    color: #2563eb;
+    font-size: 14px;
+    font-weight: 600;
 }
 
-.azul {
-    background-color: #e7f0ff;
-    color: #0d6efd;
+.modulo-enlace i {
+    transition: transform 0.2s ease;
 }
 
-.verde {
-    background-color: #e6f6ec;
-    color: #198754;
+.modulo-card:hover .modulo-enlace i {
+    transform: translateX(5px);
 }
 
-.naranja {
-    background-color: #fff3df;
-    color: #fd7e14;
-}
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .content h3 {
+        font-size: 23px;
+    }
 
-.rojo {
-    background-color: #fdeaea;
-    color: #dc3545;
+    .modulo-card {
+        min-height: 220px;
+    }
+
+    .modulo-card .card-body {
+        padding: 22px;
+    }
 }

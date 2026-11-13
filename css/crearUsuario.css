@@ -4,147 +4,50 @@
    ========================================== */
 
 :root {
-    --primary-dark: #202b3d;
     --primary-blue: #2563eb;
     --primary-blue-hover: #1d4ed8;
-    --background: #f3f5f9;
-    --white: #ffffff;
     --text: #344054;
     --text-muted: #64748b;
     --border: #d6dce5;
 }
 
 /* ==========================================
-   ESTILOS GENERALES
+   ENCABEZADO DE PÁGINA
    ========================================== */
 
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    min-height: 100vh;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--text);
-
-    background:
-        radial-gradient(
-            ellipse at 10% 15%,
-            rgba(37, 99, 235, 0.16),
-            transparent 42%
-        ),
-        radial-gradient(
-            ellipse at 90% 85%,
-            rgba(32, 43, 61, 0.14),
-            transparent 45%
-        ),
-        linear-gradient(
-            135deg,
-            #f8fafc 0%,
-            #e9eef7 50%,
-            #f1f5f9 100%
-        );
-
-    background-attachment: fixed;
-}
-
-/* Cuadrícula decorativa del fondo */
-
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-
-    background-image:
-        linear-gradient(
-            rgba(32, 43, 61, 0.035) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(32, 43, 61, 0.035) 1px,
-            transparent 1px
-        );
-
-    background-size: 42px 42px;
-    pointer-events: none;
-    z-index: 0;
-}
-
-/* ==========================================
-   CONTENEDOR PRINCIPAL
-   ========================================== */
-
-.page-wrapper {
-    position: relative;
-    z-index: 1;
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 0 20px 50px;
-}
-
-/* ==========================================
-   NAVEGACIÓN
-   ========================================== */
-
-nav {
-    font-size: 0.9rem;
-}
-
-nav a {
-    color: var(--text-muted);
-    transition: color 0.2s ease;
-}
-
-nav a:hover {
-    color: var(--primary-blue) !important;
-}
-
-/* ==========================================
-   ENCABEZADO
-   ========================================== */
-
-.card-header {
-    background: var(--primary-dark) !important;
-    color: var(--white);
-    padding: 30px 36px;
-    border: none;
-    border-radius: 14px !important;
-
-    box-shadow:
-        0 6px 20px rgba(32, 43, 61, 0.12);
-}
-
-.card-header h2 {
-    font-size: 1.65rem;
+.content h3 {
+    color: #172b4d;
+    font-size: 26px;
     font-weight: 700;
-    letter-spacing: -0.4px;
-    margin-bottom: 8px;
-}
-
-.card-header p {
-    font-size: 0.95rem;
-    line-height: 1.6;
 }
 
 /* ==========================================
    TARJETA PRINCIPAL
    ========================================== */
 
-.card {
-    background: rgba(255, 255, 255, 0.97);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    border-radius: 16px;
+.content .card {
+    background: #ffffff;
+    border: none;
+    border-radius: 12px;
     overflow: hidden;
 
-    box-shadow:
-        0 12px 35px rgba(32, 43, 61, 0.09),
-        0 3px 10px rgba(32, 43, 61, 0.04) !important;
+    box-shadow: 0 4px 18px rgba(32, 43, 61, 0.07);
 }
 
-.card-body {
-    padding: 38px 42px;
+.content .card-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 20px 24px;
+}
+
+.content .card-header h5 {
+    color: #1e3a8a;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.content .card-body {
+    padding: 32px;
 }
 
 /* ==========================================
@@ -152,19 +55,23 @@ nav a:hover {
    ========================================== */
 
 .form-section {
-    margin-bottom: 28px;
+    margin-bottom: 20px;
 }
 
 .section-title {
-    color: var(--primary-dark);
-    font-size: 1.1rem;
+    color: #1e3a8a;
+    font-size: 17px;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .section-description {
     color: var(--text-muted);
-    font-size: 0.92rem;
+    font-size: 14px;
     line-height: 1.6;
     margin-bottom: 24px;
 }
@@ -173,16 +80,16 @@ nav a:hover {
     height: 1px;
     background: #e2e8f0;
     border: none;
-    margin: 32px 0;
+    margin: 30px 0;
 }
 
 /* ==========================================
    LABELS
    ========================================== */
 
-.form-label {
+.content .form-label {
     color: var(--text);
-    font-size: 0.92rem;
+    font-size: 14px;
     font-weight: 600;
     margin-bottom: 9px;
 }
@@ -196,49 +103,52 @@ nav a:hover {
    INPUTS Y SELECTS
    ========================================== */
 
-.form-control,
-.form-select {
+.content .form-control,
+.content .form-select {
     width: 100%;
-    min-height: 48px;
-    padding: 12px 14px;
+    min-height: 46px;
+    padding: 10px 14px;
+
     background: #ffffff;
     color: var(--text);
+
     border: 1px solid var(--border);
-    border-radius: 9px;
-    font-size: 0.95rem;
+    border-radius: 8px;
+
+    font-size: 14px;
 
     transition:
         border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        background-color 0.2s ease;
+        box-shadow 0.2s ease;
 }
 
-.form-control::placeholder {
+.content .form-control::placeholder {
     color: #98a2b3;
 }
 
-.form-control:hover,
-.form-select:hover {
+.content .form-control:hover,
+.content .form-select:hover {
     border-color: #a7b4c7;
 }
 
-.form-control:focus,
-.form-select:focus {
-    background: #ffffff;
+.content .form-control:focus,
+.content .form-select:focus {
     border-color: #3b82f6;
     box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
     outline: none;
 }
 
-.form-select {
+.content .form-select {
     cursor: pointer;
 }
 
-/* Textos de ayuda */
+/* ==========================================
+   TEXTOS DE AYUDA
+   ========================================== */
 
-.form-text {
+.content .form-text {
     color: var(--text-muted);
-    font-size: 0.82rem;
+    font-size: 12px;
     margin-top: 8px;
     line-height: 1.5;
 }
@@ -252,145 +162,73 @@ nav a:hover {
 }
 
 #mensaje:not(:empty) {
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 
-.alert {
-    border: none;
-    border-radius: 9px;
-    padding: 14px 18px;
-    font-size: 0.92rem;
+#mensaje .alert {
+    border-radius: 8px;
+    font-size: 14px;
 }
 
 /* ==========================================
-   BOTONES
+   BOTONES DEL FORMULARIO
    ========================================== */
 
-.form-footer {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 14px;
-    padding-top: 26px;
-    border-top: 1px solid #e2e8f0;
-}
-
-.btn {
-    min-height: 44px;
-    padding: 11px 26px;
-    border-radius: 9px;
-    font-size: 0.92rem;
+#formCrearUsuario .btn {
+    min-height: 42px;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 14px;
     font-weight: 600;
-
-    transition:
-        background-color 0.2s ease,
-        border-color 0.2s ease,
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
 }
 
-/* Botón Crear usuario */
-
-.btn-primary {
+#formCrearUsuario .btn-primary {
     background: var(--primary-blue);
     border-color: var(--primary-blue);
-    color: white;
 }
 
-.btn-primary:hover,
-.btn-primary:focus {
+#formCrearUsuario .btn-primary:hover {
     background: var(--primary-blue-hover);
     border-color: var(--primary-blue-hover);
-    color: white;
-    transform: translateY(-1px);
-
-    box-shadow:
-        0 5px 14px rgba(37, 99, 235, 0.2);
 }
 
-.btn-primary:disabled {
+#formCrearUsuario .btn-primary:disabled {
     opacity: 0.65;
     cursor: not-allowed;
-    transform: none;
-}
-
-/* Botón Cancelar */
-
-.btn-secondary {
-    background: #64748b;
-    border-color: #64748b;
-    color: white;
-}
-
-.btn-secondary:hover,
-.btn-secondary:focus {
-    background: #475569;
-    border-color: #475569;
-    color: white;
 }
 
 /* ==========================================
-   RESPONSIVE - TABLETS
+   RESPONSIVE
    ========================================== */
 
 @media (max-width: 768px) {
 
-    .page-wrapper {
-        margin: 24px auto;
-        padding: 0 16px 32px;
+    .content h3 {
+        font-size: 23px;
     }
 
-    .card-header {
-        padding: 25px 24px;
-    }
-
-    .card-header h2 {
-        font-size: 1.4rem;
-    }
-
-    .card-body {
-        padding: 28px 22px;
+    .content .card-body {
+        padding: 20px !important;
     }
 
     .section-divider {
-        margin: 26px 0;
+        margin: 24px 0;
     }
 }
 
-/* ==========================================
-   RESPONSIVE - CELULARES
-   ========================================== */
-
 @media (max-width: 576px) {
 
-    .page-wrapper {
-        margin-top: 18px;
-        padding: 0 12px 24px;
+    .content .card-body {
+        padding: 16px !important;
     }
 
-    .card-header {
-        padding: 22px 20px;
-    }
-
-    .card-header h2 {
-        font-size: 1.3rem;
-    }
-
-    .card-body {
-        padding: 24px 18px;
-    }
-
-    .section-title {
-        font-size: 1rem;
-    }
-
-    .form-footer {
+    #formCrearUsuario .d-flex.justify-content-end {
         flex-direction: column-reverse;
         align-items: stretch;
-        gap: 12px;
     }
 
-    .form-footer .btn {
+    #formCrearUsuario .btn {
         width: 100%;
     }
 }
