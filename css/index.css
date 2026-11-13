@@ -179,3 +179,71 @@ body {
         flex-wrap: wrap;
     }
 }
+
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+
+.stat-sub {
+    display: block;
+    margin-top: 6px;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.stat-icon-warning {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.panel-card {
+    height: 100%;
+    background-color: white;
+    padding: 22px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.panel-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.panel-title i {
+    color: #2563eb;
+}
+
+.chart-box {
+    position: relative;
+    height: 280px;
+}
+
+.empty-msg {
+    margin: 12px 0 0;
+    text-align: center;
+    color: #64748b;
+}
+
+.panel-card table thead th {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.panel-link {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 14px;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.panel-link:hover {
+    text-decoration: underline;
+}
