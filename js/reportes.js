@@ -83,43 +83,143 @@ function configurarFormularios() {
     $("#sucursalVentas").addEventListener("change", cargarEmpleados);
 }
 
+
 function configurarExportaciones() {
-    $("#exportarProductos").addEventListener("click", () => exportarCSV(
-        "productos_sin_ventas.csv",
-        ["Código", "Descripción", "Stock actual", "Precio unitario", "Capital inmovilizado"],
-        productosData.map(p => [p.codigo, p.descripcion, p.stockActual, p.precioUnitario, p.capitalInmovilizado])
-    ));
 
-    $("#exportarVentas").addEventListener("click", () => exportarCSV(
-        "ventas_mensuales_por_empleado.csv",
-        ["Sucursal", "Período", "Empleado", "Cantidad de facturas", "Total ventas"],
-        ventasData.map(v => [v.sucursal, v.periodo, v.empleado, v.cantidadFacturas, v.totalVentas])
-    ));
+    const reportes = [
+        {
+            boton: "exportarProductos",
+            titulo: "Productos sin ventas",
+            archivo: "productos_sin_ventas.pdf",
+            datos: () => productosData,
+            columnas: [
+                "Código", "Descripción", "Stock",
+                "Precio unitario", "Capital inmovilizado"
+            ],
+            filas: d => d.map(x => [
+                x.codigo, x.descripcion, x.stockActual,
+                currencyFormatter.format(x.precioUnitario),
+                currencyFormatter.format(x.capitalInmovilizado)
+            ]),
+            resumen: () => [
+                ["Productos encontrados", $("#totalProductos").textContent],
+                ["Capital inmovilizado", $("#capitalInmovilizado").textContent]
+            ],
+            filtro: () => `Días sin ventas: ${$("#diasSinVentas").value}`
+        },
+        {
+            boton: "exportarStockSucursal",
+            titulo: "Stock por sucursal",
+            archivo: "stock_por_sucursal.pdf",
+            datos: () => stockSucursalData,
+            columnas: [
+                "Código", "Producto", "Sucursal",
+                "Cantidad actual", "Stock mínimo"
+            ],
+            filas: d => d.map(x => [
+                x.codigo, x.producto, x.sucursal,
+                x.cantidadActual, x.stockMinimo
+            ]),
+            resumen: () => [
+                ["Sucursales", $("#totalStockSucursales").textContent],
+                ["Unidades disponibles", $("#unidadesStockSucursales").textContent]
+            ],
+            filtro: () => `Producto: ${$("#codigoProductoStock").value}`,
+            grafico: "chartStockSucursal"
+        },
+        {
+            boton: "exportarVentas",
+            titulo: "Ventas por empleado",
+            archivo: "ventas_por_empleado.pdf",
+            datos: () => ventasData,
+            columnas: [
+                "Sucursal", "Período", "Empleado",
+                "Facturas", "Total ventas"
+            ],
+            filas: d => d.map(x => [
+                x.sucursal, x.periodo, x.empleado,
+                x.cantidadFacturas,
+                currencyFormatter.format(x.totalVentas)
+            ]),
+            resumen: () => [
+                ["Facturas", $("#totalFacturas").textContent],
+                ["Total vendido", $("#totalVentas").textContent]
+            ],
+            filtro: () => `Año: ${$("#anioVentas").value}`,
+            grafico: "chartVentas"
+        },
+        {
+            boton: "exportarFacturacionCliente",
+            titulo: "Facturación por cliente",
+            archivo: "facturacion_clientes.pdf",
+            datos: () => facturacionClienteData,
+            columnas: [
+                "Tipo de cliente", "Facturas",
+                "Total facturado", "Promedio"
+            ],
+            filas: d => d.map(x => [
+                x.tipoCliente, x.cantidadFacturas,
+                currencyFormatter.format(x.totalFacturado),
+                currencyFormatter.format(x.promedioPorFactura)
+            ]),
+            resumen: () => [
+                ["Facturas", $("#totalFacturasCliente").textContent],
+                ["Total facturado", $("#totalFacturadoCliente").textContent]
+            ],
+            filtro: () =>
+                `Período: ${$("#fechaDesdeFacturacion").value} al ${$("#fechaHastaFacturacion").value}`,
+            grafico: "chartFacturacionCliente"
+        },
+        {
+            boton: "exportarEntregas",
+            titulo: "Entregas atrasadas",
+            archivo: "entregas_atrasadas.pdf",
+            datos: () => entregasData,
+            columnas: [
+                "Tipo", "Orden", "Cliente / Proveedor",
+                "Estado", "Fecha estimada",
+                "Días de atraso", "Unidades"
+            ],
+            filas: d => d.map(x => [
+                x.tipo, x.numeroOrden, x.clienteProveedor,
+                x.estadoActual, formatearFecha(x.fechaEntregaEstimada),
+                x.diasAtraso, x.unidadesPendientes
+            ]),
+            resumen: () => [
+                ["Entregas atrasadas", $("#totalEntregas").textContent],
+                ["Unidades pendientes", $("#unidadesPendientes").textContent]
+            ],
+            filtro: () => `Fecha de referencia: ${$("#fechaReferencia").value}`
+        },
+        {
+            boton: "exportarStockMinimo",
+            titulo: "Productos para reposición",
+            archivo: "productos_reposicion.pdf",
+            datos: () => stockMinimoData,
+            columnas: [
+                "Sucursal", "Código", "Producto",
+                "Actual", "Mínimo", "Faltante"
+            ],
+            filas: d => d.map(x => [
+                x.sucursal, x.codigo, x.producto,
+                x.cantidadActual, x.stockMinimo, x.faltanteReposicion
+            ]),
+            resumen: () => [
+                ["Productos para reponer", $("#totalStockMinimo").textContent],
+                ["Unidades faltantes", $("#totalFaltanteReposicion").textContent]
+            ],
+            filtro: () =>
+                `Sucursal: ${$("#sucursalStockMinimo").selectedOptions[0]?.textContent || "Todas"}`,
+            grafico: "chartStockMinimo"
+        }
+    ];
 
-    $("#exportarEntregas").addEventListener("click", () => exportarCSV(
-        "entregas_atrasadas.csv",
-        ["Tipo", "Número de orden", "Cliente/Proveedor", "Estado actual", "Fecha estimada", "Días de atraso", "Unidades pendientes"],
-        entregasData.map(e => [e.tipo, e.numeroOrden, e.clienteProveedor, e.estadoActual, e.fechaEntregaEstimada, e.diasAtraso, e.unidadesPendientes])
-    ));
-
-    $("#exportarStockSucursal").addEventListener("click", () => exportarCSV(
-        "stock_por_sucursal.csv",
-        ["Código", "Producto", "Sucursal", "Cantidad actual", "Stock mínimo"],
-        stockSucursalData.map(x => [x.codigo, x.producto, x.sucursal, x.cantidadActual, x.stockMinimo])
-    ));
-
-    $("#exportarFacturacionCliente").addEventListener("click", () => exportarCSV(
-        "facturacion_por_tipo_cliente.csv",
-        ["Tipo de cliente", "Cantidad de facturas", "Total facturado", "Promedio por factura"],
-        facturacionClienteData.map(x => [x.tipoCliente, x.cantidadFacturas, x.totalFacturado, x.promedioPorFactura])
-    ));
-
-    $("#exportarStockMinimo").addEventListener("click", () => exportarCSV(
-        "productos_bajo_stock_minimo.csv",
-        ["Sucursal", "Código", "Producto", "Cantidad actual", "Stock mínimo", "Faltante para reposición"],
-        stockMinimoData.map(x => [x.sucursal, x.codigo, x.producto, x.cantidadActual, x.stockMinimo, x.faltanteReposicion])
-    ));
+    reportes.forEach(reporte => {
+        document.getElementById(reporte.boton)
+            .addEventListener("click", () => generarPDF(reporte));
+    });
 }
+
 
 function inicializarFechas() {
     const hoy = new Date();
@@ -649,4 +749,149 @@ function exportarCSV(filename, headers, rows) {
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
+}
+
+
+function generarPDF(reporte) {
+    const datos = reporte.datos();
+
+    if (!datos.length) {
+        mostrarMensaje("No hay datos para exportar.");
+        return;
+    }
+
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+            orientation: "landscape",
+            unit: "mm",
+            format: "a4"
+        });
+
+        const ancho = doc.internal.pageSize.getWidth();
+        const alto = doc.internal.pageSize.getHeight();
+        const azul = [30, 58, 138];
+        const margen = 14;
+
+        // Encabezado
+        doc.setFillColor(...azul);
+        doc.rect(0, 0, ancho, 29, "F");
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(19);
+        doc.text("FERRETERIA TRONKA", margen, 14);
+
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        doc.text("REPORTE DE GESTION", margen, 21);
+
+        // Título y fecha
+        doc.setTextColor(30, 58, 138);
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
+        doc.text(reporte.titulo, margen, 40);
+
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(100, 116, 139);
+
+        const fecha = new Date().toLocaleString("es-AR");
+        doc.text(`Generado: ${fecha}`, margen, 47);
+        doc.text(reporte.filtro(), margen, 53);
+
+        // Indicadores
+        const resumen = reporte.resumen();
+
+        resumen.forEach(([etiqueta, valor], index) => {
+            const x = margen + index * 85;
+
+            doc.setFillColor(239, 246, 255);
+            doc.roundedRect(x, 60, 80, 22, 3, 3, "F");
+
+            doc.setTextColor(71, 85, 105);
+            doc.setFontSize(9);
+            doc.text(etiqueta, x + 5, 68);
+
+            doc.setTextColor(...azul);
+            doc.setFontSize(13);
+            doc.setFont("helvetica", "bold");
+            doc.text(String(valor), x + 5, 77);
+        });
+
+        let posicionTabla = 92;
+
+        // Gráfico existente de Chart.js
+        if (reporte.grafico) {
+            const canvas = document.getElementById(reporte.grafico);
+
+            if (canvas && window.Chart?.getChart(canvas)) {
+                const imagen = canvas.toDataURL("image/png");
+
+                // Mantener proporción del gráfico
+                const anchoGrafico = 160;
+                const altoGrafico = Math.min(
+                    78,
+                    anchoGrafico * canvas.height / canvas.width
+                );
+
+                doc.addImage(
+                    imagen, "PNG", margen, 88,
+                    anchoGrafico, altoGrafico
+                );
+
+                posicionTabla = 88 + altoGrafico + 10;
+            }
+        }
+
+        // Tabla
+        doc.autoTable({
+            startY: posicionTabla,
+            head: [reporte.columnas],
+            body: reporte.filas(datos),
+            theme: "striped",
+            margin: {
+                left: margen,
+                right: margen,
+                top: 15,
+                bottom: 17
+            },
+            styles: {
+                fontSize: 8,
+                cellPadding: 3,
+                overflow: "linebreak"
+            },
+            headStyles: {
+                fillColor: azul,
+                textColor: 255,
+                fontStyle: "bold"
+            },
+            alternateRowStyles: {
+                fillColor: [241, 245, 249]
+            },
+            didDrawPage: () => {
+                const pagina = doc.internal.getNumberOfPages();
+
+                doc.setFontSize(8);
+                doc.setTextColor(120, 130, 145);
+                doc.text(
+                    "Ferreteria Tronka - Reporte de gestion",
+                    margen,
+                    alto - 9
+                );
+                doc.text(
+                    `Pagina ${pagina}`,
+                    ancho - margen,
+                    alto - 9,
+                    { align: "right" }
+                );
+            }
+        });
+
+        doc.save(reporte.archivo);
+
+    } catch (error) {
+        console.error("Error al generar PDF:", error);
+        mostrarMensaje("No se pudo generar el archivo PDF.");
+    }
 }
